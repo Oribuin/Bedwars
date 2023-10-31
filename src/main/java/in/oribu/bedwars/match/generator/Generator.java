@@ -12,6 +12,7 @@ import org.bukkit.persistence.PersistentDataType;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
@@ -19,10 +20,9 @@ import java.util.stream.Collectors;
  */
 public class Generator {
 
-    private final Material material; // The material to drop
+    private final Map<Material, Integer> materials; // The material to drop
     private final Location center; // The location of the generator
     private long cooldown; // The cooldown between drops (in millis)
-    private int dropAmount; // The amount to drop per tick
     private long lastDrop; // The last time the generator dropped an item
     private int maxAmount; // The maximum amount of items that can be inside a generator
     private int radius; // The radius of the generator (Default: 3x3)
@@ -31,15 +31,14 @@ public class Generator {
     /**
      * Represents a generator for a resource
      *
-     * @param material The material to drop
-     * @param center   The location of the generator
-     * @param cooldown The cooldown between drops (in millis)
+     * @param materials The materials to drop
+     * @param center    The location of the generator
+     * @param cooldown  The cooldown between drops (in millis)
      */
-    public Generator(Material material, Location center, int cooldown) {
-        this.material = material;
+    public Generator(Map<Material, Integer> materials, Location center, int cooldown) {
+        this.materials = materials;
         this.center = center;
         this.cooldown = cooldown;
-        this.dropAmount = 1;
         this.lastDrop = 0;
         this.maxAmount = 48;
         this.radius = 3;
@@ -68,28 +67,33 @@ public class Generator {
             return;
 
         final World world = this.center.getWorld();
-        final ItemStack toGive = new ItemStack(this.material, this.dropAmount).clone();
-        if (world == null) return;
+        final List<ItemStack> toGive = this.materials.entrySet()
+                .stream()
+                .map(entry -> new ItemStack(entry.getKey(), entry.getValue()))
+                .toList();
 
+        if (world == null) return;
 
         // Share the itemstack with all the players inside the generator if enabled.
         if (shareDrops) {
             final List<Player> inside = this.getPlayersInside();
             if (inside.size() > 1) {
-                inside.forEach(player -> player.getInventory().addItem(toGive));
+                inside.forEach(player -> player.getInventory().addItem(toGive.toArray(ItemStack[]::new)));
                 return;
             }
         }
 
         // Create the item on the ground.
-        world.dropItem(this.center.clone(), toGive.clone(), item -> {
-            item.setUnlimitedLifetime(true);
-            item.getPersistentDataContainer().set(
-                    DataKeys.GENERATOR_ITEM,
-                    PersistentDataType.INTEGER,
-                    1
-            );
-        });
+        for (ItemStack itemStack : toGive) {
+            world.dropItem(this.center.clone(), itemStack.clone(), item -> {
+                item.setUnlimitedLifetime(true);
+                item.getPersistentDataContainer().set(
+                        DataKeys.GENERATOR_ITEM,
+                        PersistentDataType.INTEGER,
+                        1
+                );
+            });
+        }
     }
 
     /**
@@ -113,9 +117,10 @@ public class Generator {
         return world.getNearbyEntities(this.center, this.radius, this.radius, this.radius).stream()
                 .filter(entity -> entity.getType() == EntityType.DROPPED_ITEM)
                 .map(entity -> ((Item) entity).getItemStack())
-                .filter(item -> item.getType() == this.material)
+                .filter(item -> this.materials.containsKey(item.getType()))
                 .mapToInt(ItemStack::getAmount)
                 .sum();
+
     }
 
     /**
@@ -133,8 +138,19 @@ public class Generator {
                 .collect(Collectors.toList());
     }
 
-    public Material getMaterial() {
-        return this.material;
+    /**
+     * Upgrade the generator level
+     *
+     * @param material The material to upgrade
+     */
+    public void upgrade(Material material) {
+        final int level = this.materials.getOrDefault(material, 0);
+
+        this.materials.put(material, level + 1);
+    }
+
+    public Map<Material, Integer> getMaterials() {
+        return this.materials;
     }
 
     public Location getCenter() {
@@ -147,14 +163,6 @@ public class Generator {
 
     public void setCooldown(long cooldown) {
         this.cooldown = cooldown;
-    }
-
-    public int getDropAmount() {
-        return this.dropAmount;
-    }
-
-    public void setDropAmount(int dropAmount) {
-        this.dropAmount = dropAmount;
     }
 
     public long getLastDrop() {

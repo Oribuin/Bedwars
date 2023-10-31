@@ -7,7 +7,10 @@ import in.oribu.bedwars.match.upgrade.Upgrade;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
-public class HasteUpgrade implements Upgrade {
+/**
+ * Gives haste to all players on the team
+ */
+public class HasteUpgrade extends Upgrade {
 
     @Override
     public void equip(Match match, Team team, int level) {
@@ -24,17 +27,6 @@ public class HasteUpgrade implements Upgrade {
                                 true
                         )
                 ));
-    }
-
-    @Override
-    public void tick(Match match, Team team, int level) {
-        // Unused
-
-    }
-
-    @Override
-    public void remove(Match match, Team team) {
-        // Unused
     }
 
 }

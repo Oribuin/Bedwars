@@ -9,7 +9,10 @@ import org.bukkit.enchantments.Enchantment;
 
 import java.util.Arrays;
 
-public class SharpnessUpgrade implements Upgrade {
+/**
+ * Gives sharpness to all players on the team
+ */
+public class SharpnessUpgrade extends Upgrade {
 
     @Override
     public void equip(Match match, Team team, int level) {
@@ -20,16 +23,6 @@ public class SharpnessUpgrade implements Upgrade {
                         .filter(itemStack -> itemStack != null && !itemStack.getType().isAir())
                         .filter(itemStack -> Tag.ITEMS_SWORDS.isTagged(itemStack.getType()) || Tag.ITEMS_AXES.isTagged(itemStack.getType()))
                         .forEach(itemStack -> itemStack.addEnchantment(Enchantment.DAMAGE_ALL, level)));
-    }
-
-    @Override
-    public void tick(Match match, Team team, int level) {
-        // Unused
-    }
-
-    @Override
-    public void remove(Match match, Team team) {
-        // Unused
     }
 
 }

@@ -6,23 +6,38 @@ import in.oribu.bedwars.match.Team;
 /**
  * Represents an upgrade
  */
-public interface Upgrade {
+public abstract class Upgrade {
 
     /**
      * The method for each upgrade to be called when it is applied
      *
      * @param level The level of the upgrade
      */
-    void equip(Match match, Team team, int level);
+    public void equip(Match match, Team team, int level) {
+        // Unused
+    }
 
     /**
      * The method for each upgrade to be called when it is removed
      */
-    void tick(Match match, Team team, int level);
+    public void tick(Match match, Team team, int level) {
+        // Unused
+    }
 
     /**
      * The method for each upgrade to be called when it is removed
      */
-    void remove(Match match, Team team);
+    public void remove(Match match, Team team) {
+        // Unused
+    }
+
+    /**
+     * The method that is called when an event is fired
+     *
+     * @param handler The context handler
+     */
+    public void event(ContextHandler handler, Team team, int level) {
+        // Unused
+    }
 
 }

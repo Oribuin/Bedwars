@@ -1,4 +1,4 @@
-package in.oribu.bedwars.match.map;
+package in.oribu.bedwars.match;
 
 import com.sk89q.worldedit.EditSession;
 import com.sk89q.worldedit.WorldEdit;
@@ -24,16 +24,16 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Map {
+public class Level {
 
     private final @NotNull String name; // The name of the map
-    private final @NotNull Location center;; // The center of the map.
+    private final @NotNull Location center; // The center of the map
     private final @NotNull List<Generator> generators; // The generators in the map
     private final @NotNull File file; // The file of the map
     private final @Nullable ClipboardFormat format; // The clipboard format.
     private int islandRadius; // The radius of the island
 
-    public Map(@NotNull String name, @NotNull Location center, @NotNull String fileName) {
+    public Level(@NotNull String name, @NotNull Location center, @NotNull String fileName) {
         this.name = name;
         this.center = center;
         this.generators = new ArrayList<>();
@@ -108,7 +108,7 @@ public class Map {
     }
 
     public int getIslandRadius() {
-        return islandRadius;
+        return this.islandRadius;
     }
 
     public void setIslandRadius(int islandRadius) {

@@ -4,22 +4,43 @@ import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffectType;
+import org.jetbrains.annotations.NotNull;
 
+import javax.annotation.Nullable;
 import java.util.UUID;
 
 public class MatchPlayer {
 
-    private final UUID uuid; // The player's UUID
-    private final String name; // The player's name
-    private final String team; // The player's team
+    private final @NotNull UUID uuid; // The player's UUID
+    private final @NotNull String name; // The player's name
+    private final @NotNull String team; // The player's team
     private boolean dead; // If the player is deadge
     private int kill; // The player's kills
     private int deaths; // The player's deaths
     private int finals; // The player's final kills
 
-    public MatchPlayer(UUID uuid, String team) {
+    /**
+     * The constructor for the match player
+     *
+     * @param uuid The player's UUID
+     * @param team The player's team
+     */
+    public MatchPlayer(@NotNull UUID uuid, @NotNull String team) {
         this.uuid = uuid;
         this.name = this.getPlayer().getName();
+        this.team = team;
+        this.dead = false;
+    }
+
+    /**
+     * The constructor for the match player
+     *
+     * @param player The player
+     * @param team   The player's team
+     */
+    public MatchPlayer(@NotNull Player player, @NotNull String team) {
+        this.uuid = player.getUniqueId();
+        this.name = player.getName();
         this.team = team;
         this.dead = false;
     }
@@ -29,7 +50,7 @@ public class MatchPlayer {
      *
      * @param match The match to eliminate the player from
      */
-    public void eliminate(Match match) {
+    public void eliminate(@NotNull Match match) {
         this.dead = true;
         this.deaths++;
 
@@ -48,7 +69,17 @@ public class MatchPlayer {
 //        player.teleport(match.getMap().getCenter()); // TODO: Use TeleportAsync where possible
 
         // TODO: Hide the player from other players
+    }
 
+    /**
+     * Get the team the player is on
+     *
+     * @param match The match the player is in
+     * @return The team the player is on
+     */
+    @Nullable
+    public Team getTeam(@NotNull Match match) {
+        return match.getTeams().get(this.team);
     }
 
     /**
@@ -56,6 +87,7 @@ public class MatchPlayer {
      *
      * @return The player's name
      */
+    @NotNull
     public Player getPlayer() {
         Player player = Bukkit.getPlayer(uuid);
 
@@ -66,15 +98,16 @@ public class MatchPlayer {
         return player;
     }
 
-    public UUID getUuid() {
+    @NotNull
+    public UUID getUUID() {
         return this.uuid;
     }
 
-    public String getName() {
+    public @NotNull String getName() {
         return this.name;
     }
 
-    public String getTeam() {
+    public @NotNull String getTeam() {
         return this.team;
     }
 

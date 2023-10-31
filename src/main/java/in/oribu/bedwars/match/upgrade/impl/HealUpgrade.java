@@ -1,25 +1,23 @@
 package in.oribu.bedwars.match.upgrade.impl;
 
 import in.oribu.bedwars.match.Match;
-import in.oribu.bedwars.match.MatchPlayer;
 import in.oribu.bedwars.match.Team;
 import in.oribu.bedwars.match.upgrade.Upgrade;
 import org.bukkit.Location;
 import org.bukkit.Particle;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
 import java.util.concurrent.TimeUnit;
 
-public class HealUpgrade implements Upgrade {
+/**
+ * Heals all players on the team while on island
+ */
+public class HealUpgrade extends Upgrade {
 
     private final long cooldown = TimeUnit.SECONDS.toMillis(5);
     private long lastUse = System.currentTimeMillis();
-
-    @Override
-    public void equip(Match match, Team team, int level) {
-
-    }
 
     @Override
     public void tick(Match match, Team team, int level) {
@@ -28,8 +26,7 @@ public class HealUpgrade implements Upgrade {
 
         this.lastUse = System.currentTimeMillis();
 
-        // TODO: get map radius;
-        int radius = match.
+        int radius = match.getMap().getIslandRadius();
 
         final Location center = team.getSpawn();
         if (center.getWorld() != null) {
@@ -37,28 +34,25 @@ public class HealUpgrade implements Upgrade {
                     Particle.VILLAGER_HAPPY,
                     center.clone(),
                     100,
-
-
+                    radius,
+                    radius,
+                    radius,
+                    0
             );
         }
 
-        team.getPlayers().values()
-                .stream()
-                .map(MatchPlayer::getPlayer)
-                .forEach(player -> player.addPotionEffect(new PotionEffect(
-                        PotionEffectType.REGENERATION,
-                        20 * 10,
-                        0,
-                        false,
-                        false,
-                        true
-                )));
-
-    }
-
-    @Override
-    public void remove(Match match, Team team) {
-
+        center.getWorld().getNearbyEntities(center.clone(), radius, radius, radius,
+                entity ->
+                        team.getPlayers().containsKey(entity.getUniqueId())
+                        && entity instanceof LivingEntity
+        ).forEach(entity -> ((LivingEntity) entity).addPotionEffect(new PotionEffect(
+                PotionEffectType.REGENERATION,
+                20 * 10,
+                0,
+                false,
+                false,
+                true
+        )));
     }
 
 }

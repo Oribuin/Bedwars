@@ -3,22 +3,20 @@ package in.oribu.bedwars.match.upgrade.impl;
 import in.oribu.bedwars.match.Match;
 import in.oribu.bedwars.match.Team;
 import in.oribu.bedwars.match.upgrade.Upgrade;
+import org.bukkit.Material;
 
-public class ForgeUpgrade implements Upgrade {
-
-    @Override
-    public void tick(Match match, Team team, int level) {
-        // TODO: Get team island generator.
-    }
+/**
+ * Upgrades the resource count for the team's generator
+ */
+public class ForgeUpgrade extends Upgrade {
 
     @Override
     public void equip(Match match, Team team, int level) {
-        // Unused
-    }
-
-    @Override
-    public void remove(Match match, Team team) {
-        // Unused
+        switch (level) {
+            case 1 -> team.getGenerator().upgrade(Material.IRON_INGOT);
+            case 2 -> team.getGenerator().upgrade(Material.GOLD_INGOT);
+            case 3 -> team.getGenerator().upgrade(Material.EMERALD);
+        }
     }
 
 }

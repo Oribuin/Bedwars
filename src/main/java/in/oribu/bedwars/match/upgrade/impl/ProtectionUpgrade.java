@@ -8,7 +8,10 @@ import org.bukkit.enchantments.Enchantment;
 
 import java.util.Arrays;
 
-public class ProtectionUpgrade implements Upgrade {
+/**
+ * Gives protection to all players on the team
+ */
+public class ProtectionUpgrade extends Upgrade {
 
     @Override
     public void equip(Match match, Team team, int level) {
@@ -17,17 +20,6 @@ public class ProtectionUpgrade implements Upgrade {
                 .map(MatchPlayer::getPlayer)
                 .forEach(player -> Arrays.stream(player.getInventory().getArmorContents())
                         .forEach(itemStack -> itemStack.addEnchantment(Enchantment.PROTECTION_ENVIRONMENTAL, level)));
-    }
-
-    @Override
-    public void tick(Match match, Team team, int level) {
-        // Unused
-
-    }
-
-    @Override
-    public void remove(Match match,  Team team) {
-        // Unused
     }
 
 }
