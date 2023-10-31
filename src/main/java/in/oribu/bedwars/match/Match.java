@@ -7,6 +7,7 @@ import org.bukkit.entity.Player;
 
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class Match {
@@ -61,6 +62,18 @@ public class Match {
         // Tick the generators
         this.level.getGenerators().forEach(Generator::tick);
         this.teams.values().forEach(team -> team.tick(this));
+    }
+
+    /**
+     * Get all the players in the match
+     *
+     * @return The players in the match
+     */
+    public List<MatchPlayer> getPlayers() {
+        return this.teams.values().stream()
+                .map(Team::getPlayers)
+                .flatMap(map -> map.values().stream())
+                .toList();
     }
 
     public Level getMap() {

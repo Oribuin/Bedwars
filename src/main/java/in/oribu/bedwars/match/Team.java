@@ -12,6 +12,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
+@SuppressWarnings("deprecation") // shut up kyori
 public class Team {
 
     private final @NotNull String name;

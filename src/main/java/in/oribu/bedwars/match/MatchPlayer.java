@@ -1,10 +1,10 @@
 package in.oribu.bedwars.match;
 
 import dev.rosewood.rosegarden.utils.NMSUtil;
+import in.oribu.bedwars.storage.Stats;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
-import org.bukkit.potion.PotionEffectType;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
@@ -16,9 +16,7 @@ public class MatchPlayer {
     private final @NotNull String name; // The player's name
     private final @NotNull String team; // The player's team
     private boolean dead; // If the player is deadge
-    private int kill; // The player's kills
-    private int deaths; // The player's deaths
-    private int finals; // The player's final kills
+    private Stats stats; // The player's stats
 
     /**
      * The constructor for the match player
@@ -31,6 +29,7 @@ public class MatchPlayer {
         this.name = this.getPlayer().getName();
         this.team = team;
         this.dead = false;
+        this.stats = new Stats();
     }
 
     /**
@@ -53,7 +52,7 @@ public class MatchPlayer {
      */
     public void eliminate(@NotNull Match match) {
         this.dead = true;
-        this.deaths++;
+        this.stats.setDeaths(this.stats.getDeaths() + 1);
 
         // TODO: Check how many members of the team are alive
         // TODO: Play elimination sound, message and finisher
@@ -123,27 +122,12 @@ public class MatchPlayer {
         this.dead = dead;
     }
 
-    public int getKill() {
-        return this.kill;
+    public Stats getStats() {
+        return this.stats;
     }
 
-    public void setKill(int kill) {
-        this.kill = kill;
+    public void setStats(Stats stats) {
+        this.stats = stats;
     }
 
-    public int getDeaths() {
-        return this.deaths;
-    }
-
-    public void setDeaths(int deaths) {
-        this.deaths = deaths;
-    }
-
-    public int getFinals() {
-        return this.finals;
-    }
-
-    public void setFinals(int finals) {
-        this.finals = finals;
-    }
 }

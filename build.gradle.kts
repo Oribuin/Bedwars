@@ -52,9 +52,6 @@ tasks.withType<ShadowJar> {
 
     relocate("org.jetbrains.annotations", "in.oribu.bedwars.libs.annotations")
     relocate("dev.rosewood.rosegarden", "in.oribu.bedwars.libs.rosegarden")
-
-    exclude("dev/rosewood/rosegarden/lib/hikaricp/**/*.class")
-    exclude("dev/rosewood/rosegarden/lib/slf4j/**/*.class")
 }
 
 tasks {
