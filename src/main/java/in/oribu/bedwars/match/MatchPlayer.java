@@ -1,5 +1,6 @@
 package in.oribu.bedwars.match;
 
+import dev.rosewood.rosegarden.utils.NMSUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
@@ -55,7 +56,6 @@ public class MatchPlayer {
         this.deaths++;
 
         // TODO: Check how many members of the team are alive
-        // TODO: Teleport the player to the map center.
         // TODO: Play elimination sound, message and finisher
         // TODO: Drop ender chest contents into team generator.
 
@@ -65,8 +65,12 @@ public class MatchPlayer {
         player.setGameMode(GameMode.CREATIVE);
         player.setAllowFlight(true);
         player.getInventory().clear();
-        player.addPotionEffect(PotionEffectType.INVISIBILITY.createEffect(Integer.MAX_VALUE, 0));
-//        player.teleport(match.getMap().getCenter()); // TODO: Use TeleportAsync where possible
+        player.setInvisible(true);
+        if (NMSUtil.isPaper()) {
+            player.teleportAsync(match.getMap().getCenter());
+        } else {
+            player.teleport(match.getMap().getCenter());
+        }
 
         // TODO: Hide the player from other players
     }
