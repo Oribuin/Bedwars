@@ -91,6 +91,18 @@ public class Team {
                 .forEach(player -> player.sendMessage("Your team has upgraded " + type.name() + " to level " + newLevel + "!"));
     }
 
+    /**
+     * Get the amount of players alive on the team
+     *
+     * @return The amount
+     */
+    public int getAlive() {
+        return (int) this.players.values()
+                .stream()
+                .filter(player -> !player.isDead())
+                .count();
+    }
+
     public @NotNull String getName() {
         return this.name;
     }
