@@ -1,7 +1,7 @@
 package in.oribu.bedwars.match;
 
 import in.oribu.bedwars.match.generator.Generator;
-import in.oribu.bedwars.match.upgrade.UpgradeType;
+import in.oribu.bedwars.upgrade.UpgradeType;
 import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;

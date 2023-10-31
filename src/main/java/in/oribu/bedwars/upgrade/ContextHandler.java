@@ -1,4 +1,4 @@
-package in.oribu.bedwars.match.upgrade;
+package in.oribu.bedwars.upgrade;
 
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;

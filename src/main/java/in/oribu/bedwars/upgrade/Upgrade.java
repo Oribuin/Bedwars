@@ -1,4 +1,4 @@
-package in.oribu.bedwars.match.upgrade;
+package in.oribu.bedwars.upgrade;
 
 import in.oribu.bedwars.match.Match;
 import in.oribu.bedwars.match.Team;

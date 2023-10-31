@@ -1,9 +1,9 @@
-package in.oribu.bedwars.match.upgrade.impl;
+package in.oribu.bedwars.upgrade.impl;
 
 import in.oribu.bedwars.match.Match;
 import in.oribu.bedwars.match.MatchPlayer;
 import in.oribu.bedwars.match.Team;
-import in.oribu.bedwars.match.upgrade.Upgrade;
+import in.oribu.bedwars.upgrade.Upgrade;
 import org.bukkit.Tag;
 import org.bukkit.enchantments.Enchantment;
 

@@ -1,10 +1,10 @@
-package in.oribu.bedwars.match.upgrade;
+package in.oribu.bedwars.upgrade;
 
-import in.oribu.bedwars.match.upgrade.impl.ForgeUpgrade;
-import in.oribu.bedwars.match.upgrade.impl.HasteUpgrade;
-import in.oribu.bedwars.match.upgrade.impl.HealUpgrade;
-import in.oribu.bedwars.match.upgrade.impl.ProtectionUpgrade;
-import in.oribu.bedwars.match.upgrade.impl.SharpnessUpgrade;
+import in.oribu.bedwars.upgrade.impl.ForgeUpgrade;
+import in.oribu.bedwars.upgrade.impl.HasteUpgrade;
+import in.oribu.bedwars.upgrade.impl.HealUpgrade;
+import in.oribu.bedwars.upgrade.impl.ProtectionUpgrade;
+import in.oribu.bedwars.upgrade.impl.SharpnessUpgrade;
 
 public enum UpgradeType {
     PROTECTION(new ProtectionUpgrade()), // Protection upgrade
