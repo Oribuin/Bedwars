@@ -47,13 +47,6 @@ dependencies {
     }
 }
 
-tasks.withType<ShadowJar> {
-    archiveClassifier = null
-
-    relocate("org.jetbrains.annotations", "in.oribu.bedwars.libs.annotations")
-    relocate("dev.rosewood.rosegarden", "in.oribu.bedwars.libs.rosegarden")
-}
-
 tasks {
 
     shadowJar {
