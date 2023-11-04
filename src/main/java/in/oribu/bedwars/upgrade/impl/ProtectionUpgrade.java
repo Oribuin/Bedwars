@@ -19,7 +19,11 @@ public class ProtectionUpgrade extends Upgrade {
                 .stream()
                 .map(MatchPlayer::getPlayer)
                 .forEach(player -> Arrays.stream(player.getInventory().getArmorContents())
-                        .forEach(itemStack -> itemStack.addEnchantment(Enchantment.PROTECTION_ENVIRONMENTAL, level)));
+                        .forEach(itemStack -> {
+                            if (itemStack == null) return;
+
+                            itemStack.addEnchantment(Enchantment.PROTECTION_ENVIRONMENTAL, level);
+                        }));
     }
 
 }
