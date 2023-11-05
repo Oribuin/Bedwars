@@ -16,11 +16,7 @@ public final class ItemRegistry {
     static {
         register(new BridgeEggItem());
     }
-
-    public ItemRegistry() {
-        throw new UnsupportedOperationException();
-    }
-
+    
     /**
      * Register a custom item into the registry
      *
@@ -49,6 +45,13 @@ public final class ItemRegistry {
     @NotNull
     public static Map<String, CustomItem> getItems() {
         return items;
+    }
+
+    /**
+     * This class should not be instantiated
+     */
+    public ItemRegistry() {
+        throw new UnsupportedOperationException();
     }
 
 }
