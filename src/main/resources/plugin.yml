@@ -1,0 +1,6 @@
+name: Bedwars
+main: in.oribu.bedwars.BedwarsPlugin
+version: '1.0.0'
+api-version: '1.16'
+author: Oribuin
+description: Bedwars plugin

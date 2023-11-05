@@ -1,6 +1,3 @@
-import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
-import org.gradle.launcher.daemon.protocol.Build
-
 plugins {
     id("java-library")
     id("com.github.johnrengelman.shadow") version "7.1.0"
@@ -8,7 +5,7 @@ plugins {
 }
 
 group = "in.oribu"
-version = "1.0"
+version = "1.0.0"
 
 java {
     toolchain {
