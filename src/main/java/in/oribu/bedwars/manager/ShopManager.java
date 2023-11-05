@@ -55,7 +55,7 @@ public class ShopManager extends Manager {
                         this.rosePlugin.getLogger().warning("Unable to find any items in the shop " + file.getName() + ".");
                         return;
                     }
-                    
+
                     // TODO: Load the shop items
                     // Load all the shop costs
 //                    for (String key : section.getKeys(false)) {

@@ -15,7 +15,7 @@ public class BedwarsPlugin extends RosePlugin {
         instance = this;
     }
 
-    public static BedwarsPlugin getInstance() {
+    public static BedwarsPlugin get() {
         return instance;
     }
 

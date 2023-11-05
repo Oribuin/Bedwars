@@ -37,7 +37,7 @@ public class Level {
         this.name = name;
         this.center = center;
         this.generators = new ArrayList<>();
-        this.file = new File(BedwarsPlugin.getInstance().getDataFolder(), "schematics/" + fileName);
+        this.file = new File(BedwarsPlugin.get().getDataFolder(), "schematics/" + fileName);
         this.format = ClipboardFormats.findByFile(this.file);
         this.islandRadius = 25;
     }
@@ -49,7 +49,7 @@ public class Level {
         // Load the map schematic into the world.
         final PluginManager manager = Bukkit.getPluginManager();
         if (manager.isPluginEnabled("FastAsyncWorldEdit") || manager.isPluginEnabled("AsyncWorldEdit")) {
-            Bukkit.getScheduler().runTaskAsynchronously(BedwarsPlugin.getInstance(), () -> this.paste());
+            Bukkit.getScheduler().runTaskAsynchronously(BedwarsPlugin.get(), () -> this.paste());
         } else {
             this.paste();
         }

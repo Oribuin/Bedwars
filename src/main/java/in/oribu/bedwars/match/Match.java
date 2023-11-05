@@ -52,7 +52,7 @@ public class Match {
         // Set the start time
         this.startTime = System.currentTimeMillis();
 
-        Bukkit.getScheduler().runTaskTimer(BedwarsPlugin.getInstance(), this::tick, 0, 1);
+        Bukkit.getScheduler().runTaskTimer(BedwarsPlugin.get(), this::tick, 0, 1);
     }
 
     /**
