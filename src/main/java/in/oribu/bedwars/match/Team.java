@@ -12,7 +12,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-@SuppressWarnings("deprecation") // shut up kyori
 public class Team {
 
     private final @NotNull String name;
@@ -70,7 +69,6 @@ public class Team {
         }
 
         // TODO: Check if the player is already in a team
-
         this.players.put(player.getUniqueId(), new MatchPlayer(player, this.name));
         player.sendMessage("You have joined team " + this.name + "!");
     }

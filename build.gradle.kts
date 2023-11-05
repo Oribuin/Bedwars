@@ -35,8 +35,8 @@ dependencies {
     api("dev.rosewood:rosegarden:1.2.5")
     api("org.jetbrains:annotations:24.0.0")
 
-    compileOnly("io.papermc.paper:paper-api:1.20.2-R0.1-SNAPSHOT")
-//    compileOnly("org.spigotmc:spigot-api:1.20.2-R0.1-SNAPSHOT")
+//    compileOnly("io.papermc.paper:paper-api:1.20.2-R0.1-SNAPSHOT")
+    compileOnly("org.spigotmc:spigot-api:1.20.2-R0.1-SNAPSHOT")
 
     // Plugin Dependencies
     compileOnly("com.sk89q.worldedit:worldedit-bukkit:7.3.0-SNAPSHOT") {

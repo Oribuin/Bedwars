@@ -1,5 +1,6 @@
 package in.oribu.bedwars.item;
 
+import in.oribu.bedwars.item.impl.BridgeEggItem;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
@@ -16,7 +17,7 @@ public final class ItemRegistry {
     static {
         register(new BridgeEggItem());
     }
-    
+
     /**
      * Register a custom item into the registry
      *
@@ -33,8 +34,8 @@ public final class ItemRegistry {
      * @return The custom item
      */
     @Nullable
-    public static CustomItem get(String name) {
-        return items.get(name);
+    public static CustomItem get(@Nullable String name) {
+        return name == null ? null : items.get(name);
     }
 
     /**

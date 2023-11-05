@@ -1,6 +1,5 @@
 package in.oribu.bedwars.shop;
 
-import net.kyori.adventure.text.Component;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
@@ -30,7 +29,7 @@ public class ShopItem {
         // Check if the player has enough resources to buy the item.
         // TODO: Can't buy message
         if (!this.canBuy(buyer)) {
-            buyer.sendMessage(Component.text("You can't buy this item!"));
+            buyer.sendMessage("You can't buy this item!");
             return;
         }
 

@@ -65,11 +65,11 @@ public class MatchPlayer {
         player.setAllowFlight(true);
         player.getInventory().clear();
         player.setInvisible(true);
-        if (NMSUtil.isPaper()) {
-            player.teleportAsync(match.getMap().getCenter());
-        } else {
-            player.teleport(match.getMap().getCenter());
-        }
+//        if (NMSUtil.isPaper()) {
+//            player.teleportAsync(match.getMap().getCenter());
+//        } else {
+        player.teleport(match.getMap().getCenter());
+//        }
 
         // TODO: Hide the player from other players
     }

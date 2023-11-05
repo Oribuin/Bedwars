@@ -2,6 +2,8 @@ package in.oribu.bedwars;
 
 import dev.rosewood.rosegarden.RosePlugin;
 import dev.rosewood.rosegarden.manager.Manager;
+import in.oribu.bedwars.listener.CustomItemListener;
+import org.bukkit.Bukkit;
 
 import java.util.List;
 
@@ -20,17 +22,19 @@ public class BedwarsPlugin extends RosePlugin {
     }
 
     @Override
-    protected void enable() {
+    public void enable() {
+        // Register Listeners
+        Bukkit.getPluginManager().registerEvents(new CustomItemListener(this), this);
 
     }
 
     @Override
-    protected void disable() {
+    public void disable() {
 
     }
 
     @Override
-    protected List<Class<? extends Manager>> getManagerLoadPriority() {
+    public List<Class<? extends Manager>> getManagerLoadPriority() {
         return List.of();
     }
 
