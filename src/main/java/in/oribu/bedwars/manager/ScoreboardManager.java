@@ -5,6 +5,7 @@ import dev.rosewood.rosegarden.manager.Manager;
 import dev.rosewood.rosegarden.utils.HexUtils;
 import in.oribu.bedwars.manager.ConfigurationManager.Setting;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.event.Listener;
 import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.scoreboard.Criteria;
@@ -37,7 +38,7 @@ public class ScoreboardManager extends Manager implements Listener {
         final AtomicInteger slot = new AtomicInteger(-1);
         Setting.SCOREBOARD_LINES.getStringList().forEach((line) -> {
             final org.bukkit.scoreboard.Team team = this.scoreboard.registerNewTeam("bedwars-" + slot.incrementAndGet());
-            final String entry = String.format("[%d] ", slot.get());
+            final String entry = ChatColor.values()[slot.get()].toString();
 
             team.addEntry(entry);
             final Score score = this.objective.getScore(entry);
