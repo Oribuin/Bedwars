@@ -3,11 +3,13 @@ package in.oribu.bedwars;
 import dev.rosewood.rosegarden.RosePlugin;
 import dev.rosewood.rosegarden.manager.Manager;
 import in.oribu.bedwars.listener.CustomItemListener;
+import in.oribu.bedwars.listener.PlayerListeners;
 import in.oribu.bedwars.manager.CommandManager;
 import in.oribu.bedwars.manager.ConfigurationManager;
 import in.oribu.bedwars.manager.DataManager;
 import in.oribu.bedwars.manager.LocaleManager;
 import org.bukkit.Bukkit;
+import org.bukkit.plugin.PluginManager;
 
 import java.util.List;
 
@@ -33,8 +35,11 @@ public class BedwarsPlugin extends RosePlugin {
 
     @Override
     public void enable() {
+        final PluginManager pluginManager = Bukkit.getPluginManager();
+
         // Register Listeners
-        Bukkit.getPluginManager().registerEvents(new CustomItemListener(this), this);
+        pluginManager.registerEvents(new CustomItemListener(this), this);
+        pluginManager.registerEvents(new PlayerListeners(this), this);
 
     }
 

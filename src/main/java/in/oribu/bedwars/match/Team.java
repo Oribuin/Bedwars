@@ -2,11 +2,12 @@ package in.oribu.bedwars.match;
 
 import in.oribu.bedwars.match.generator.Generator;
 import in.oribu.bedwars.upgrade.UpgradeType;
-import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -23,6 +24,7 @@ public class Team {
     private boolean hasBed;
     private boolean eliminated;
     private int maxPlayers;
+    private @Nullable org.bukkit.scoreboard.Team scoreboardTeam;
 
     /**
      * The constructor for the team
@@ -42,6 +44,7 @@ public class Team {
         this.hasBed = true;
         this.eliminated = false;
         this.maxPlayers = 1;
+        this.scoreboardTeam = null;
     }
 
     /**
@@ -70,6 +73,12 @@ public class Team {
 
         // TODO: Check if the player is already in a team
         this.players.put(player.getUniqueId(), new MatchPlayer(player, this.name));
+
+        // Add the player to the scoreboard team
+        if (this.scoreboardTeam.hasEntry(player.getName())) {
+            this.scoreboardTeam.addEntry(player.getName());
+        }
+
         player.sendMessage("You have joined team " + this.name + "!");
     }
 
@@ -102,15 +111,39 @@ public class Team {
                 .count();
     }
 
-    public @NotNull String getName() {
+    /**
+     * Setup the scoreboard team with all their values.
+     *
+     * @param scoreboardTeam The scoreboard team to setup
+     */
+    public void setupScoreboardTeam(@NotNull org.bukkit.scoreboard.Team scoreboardTeam) {
+
+        if (this.scoreboardTeam == null) {
+            scoreboardTeam.setAllowFriendlyFire(false);
+            scoreboardTeam.setCanSeeFriendlyInvisibles(true);
+            scoreboardTeam.setColor(this.teamColor);
+            scoreboardTeam.setDisplayName(this.name);
+            scoreboardTeam.setOption(
+                    org.bukkit.scoreboard.Team.Option.COLLISION_RULE,
+                    org.bukkit.scoreboard.Team.OptionStatus.NEVER
+            );
+        }
+
+        this.scoreboardTeam = scoreboardTeam;
+    }
+
+    @NotNull
+    public String getName() {
         return this.name;
     }
 
-    public @NotNull Location getSpawn() {
+    @NotNull
+    public Location getSpawn() {
         return this.spawn;
     }
 
-    public @NotNull Generator getGenerator() {
+    @NotNull
+    public Generator getGenerator() {
         return this.generator;
     }
 
@@ -118,11 +151,13 @@ public class Team {
         this.generator = generator;
     }
 
-    public @NotNull ChatColor getTeamColor() {
+    @NotNull
+    public ChatColor getTeamColor() {
         return this.teamColor;
     }
 
-    public @NotNull Map<UUID, MatchPlayer> getPlayers() {
+    @NotNull
+    public Map<UUID, MatchPlayer> getPlayers() {
         return this.players;
     }
 
@@ -130,7 +165,8 @@ public class Team {
         this.players = players;
     }
 
-    public @NotNull Map<UpgradeType, Integer> getUpgrades() {
+    @NotNull
+    public Map<UpgradeType, Integer> getUpgrades() {
         return this.upgrades;
     }
 
@@ -156,6 +192,15 @@ public class Team {
 
     public void setMaxPlayers(int maxPlayers) {
         this.maxPlayers = maxPlayers;
+    }
+
+    @Nullable
+    public org.bukkit.scoreboard.Team getScoreboardTeam() {
+        return scoreboardTeam;
+    }
+
+    public void setScoreboardTeam(@Nullable org.bukkit.scoreboard.Team scoreboardTeam) {
+        this.scoreboardTeam = scoreboardTeam;
     }
 
 }

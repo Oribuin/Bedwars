@@ -6,10 +6,15 @@ import dev.rosewood.rosegarden.config.RoseSetting;
 import dev.rosewood.rosegarden.manager.AbstractConfigurationManager;
 import in.oribu.bedwars.BedwarsPlugin;
 
+import java.util.List;
+
 public class ConfigurationManager extends AbstractConfigurationManager {
 
     public enum Setting implements RoseSetting {
-        ;
+        SCOREBOARD_LINES("scoreboard-lines", List.of(
+                "<r:0.7>Scoreboard Test",
+                "<r#5:0.7>Animated Test"
+        ));
 
         private final String key;
         private final Object defaultValue;
