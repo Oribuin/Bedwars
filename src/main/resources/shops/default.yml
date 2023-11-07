@@ -1,0 +1,16 @@
+# Default Configuration for the shop
+name: "default"
+title: "Default Shop"
+size: 27
+
+items:
+  1: # Wool
+    material: WOOL
+    amount: 16
+    cost:
+      IRON_INGOT: 4
+  2: # Oak Wood
+    material: OAK_PLANKS
+    amount: 4
+    cost:
+      GOLD_INGOT: 4

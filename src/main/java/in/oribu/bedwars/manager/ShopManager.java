@@ -4,9 +4,14 @@ import dev.rosewood.rosegarden.RosePlugin;
 import dev.rosewood.rosegarden.config.CommentedConfigurationSection;
 import dev.rosewood.rosegarden.config.CommentedFileConfiguration;
 import dev.rosewood.rosegarden.manager.Manager;
+import in.oribu.bedwars.item.CustomItem;
+import in.oribu.bedwars.item.ItemRegistry;
 import in.oribu.bedwars.shop.Shop;
 import in.oribu.bedwars.shop.ShopItem;
+import in.oribu.bedwars.util.BedwarsUtil;
 import in.oribu.bedwars.util.FileUtils;
+import org.bukkit.Material;
+import org.bukkit.inventory.ItemStack;
 
 import java.io.File;
 import java.util.Arrays;
@@ -41,44 +46,76 @@ public class ShopManager extends Manager {
             return;
         }
 
+        // Load all the shops
         Arrays.stream(files)
                 .filter(file -> file.getName().endsWith(".yml"))
                 .forEach(file -> {
                     final CommentedFileConfiguration config = CommentedFileConfiguration.loadConfiguration(file);
 
-                    final String name = config.getString("name");
-                    final int size = config.getInt("size");
+                    final String shopName = config.getString("name");
+                    final int size = config.getInt("size", 27);
+                    if (shopName == null) {
+                        this.rosePlugin.getLogger().warning("Unable to find the name of the shop " + file.getName() + ".");
+                        return;
+                    }
 
                     final Map<Integer, ShopItem> items = new HashMap<>();
-                    final CommentedConfigurationSection section = config.getConfigurationSection("items");
-                    if (section == null || section.getKeys(false).isEmpty()) {
+                    final CommentedConfigurationSection itemsSection = config.getConfigurationSection("items");
+                    if (itemsSection == null || itemsSection.getKeys(false).isEmpty()) {
                         this.rosePlugin.getLogger().warning("Unable to find any items in the shop " + file.getName() + ".");
                         return;
                     }
 
-                    // TODO: Load the shop items
-                    // Load all the shop costs
-//                    for (String key : section.getKeys(false)) {
-//
-//                        final String itemName = section.getString(key + ".name");
-//                        final int itemAmount = section.getInt(key + ".amount", -1);
-//
-//                        if (itemName == null || itemAmount <= 0)
-//                            continue;
-//
-//                        // TODO: Add custom itemstack loading
-//                        // TODO: Add custom item loading
-//
-//                        int slot = 0;
-//                        try {
-//                            slot = Integer.parseInt(key);
-//                        } catch (NumberFormatException ignored) {
-//                            this.rosePlugin.getLogger().warning("Unable to parse the slot " + key + " in the shop " + file.getName() + ".");
-//                            continue;
-//                        }
-//
-//                    }
+                    // Load all the shop items.
+                    for (String key : itemsSection.getKeys(false)) {
 
+                        int slot;
+                        try {
+                            slot = Integer.parseInt(key);
+                        } catch (NumberFormatException ignored) {
+                            this.rosePlugin.getLogger().warning("Unable to parse the slot " + key + " in the shop " + file.getName() + ".");
+                            continue;
+                        }
+
+                        // Load the itemstack from the shop
+                        ItemStack result;
+                        final CustomItem item = ItemRegistry.get(itemsSection.getString(key + ".custom-item"));
+                        if (item != null) {
+                            result = item.getItem(itemsSection, key);
+                        } else {
+                            result = BedwarsUtil.deserialize(itemsSection, key);
+                        }
+
+                        if (result == null) {
+                            this.rosePlugin.getLogger().warning("Unable to parse the item in the shop " + file.getName() + ".");
+                            continue;
+                        }
+
+                        // Load the cost of the item
+                        final CommentedConfigurationSection costSection = itemsSection.getConfigurationSection(key + ".cost");
+                        if (costSection == null) {
+                            this.rosePlugin.getLogger().warning("Unable to parse the cost of the item in the shop " + file.getName() + ".");
+                            continue;
+                        }
+
+                        final Map<Material, Integer> cost = new HashMap<>();
+                        for (String costKey : costSection.getKeys(false)) {
+                            final Material costMaterial = Material.getMaterial(costKey);
+                            final int amount = costSection.getInt(costKey);
+
+                            if (costMaterial == null) {
+                                continue;
+                            }
+
+                            cost.put(costMaterial, amount);
+                        }
+
+                        final ShopItem shopItem = new ShopItem(result, cost);
+                        items.put(slot, shopItem);
+                    }
+
+                    final Shop shop = new Shop(shopName, items, size);
+                    this.shops.put(shopName, shop);
                 });
     }
 

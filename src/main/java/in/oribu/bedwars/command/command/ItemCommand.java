@@ -7,6 +7,7 @@ import dev.rosewood.rosegarden.command.framework.RoseCommandWrapper;
 import dev.rosewood.rosegarden.command.framework.annotation.RoseExecutable;
 import in.oribu.bedwars.item.CustomItem;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 
 public class ItemCommand extends RoseCommand {
 
@@ -19,7 +20,8 @@ public class ItemCommand extends RoseCommand {
         if (!(context.getSender() instanceof Player player))
             return;
 
-        item.give(player);
+        final ItemStack itemStack = item.getItem();
+        player.getInventory().addItem(itemStack);
         player.sendMessage("You have been given the item " + item.getName());
     }
 

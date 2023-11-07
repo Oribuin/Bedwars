@@ -1,5 +1,6 @@
 package in.oribu.bedwars.shop;
 
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
@@ -8,16 +9,12 @@ import java.util.Map;
 
 public class ShopItem {
 
-    private final String name;
     private ItemStack item;
-    private Map<ItemStack, Integer> cost;
-    private int amount;
+    private Map<Material, Integer> cost;
 
-    public ShopItem(String name, ItemStack item, Map<ItemStack, Integer> cost) {
-        this.name = name;
+    public ShopItem(ItemStack item, Map<Material, Integer> cost) {
         this.cost = cost;
         this.item = item;
-        this.amount = 1;
     }
 
     /**
@@ -37,8 +34,9 @@ public class ShopItem {
         final PlayerInventory inv = buyer.getInventory();
         final ItemStack[] contents = inv.getStorageContents();
 
-        for (final Map.Entry<ItemStack, Integer> entry : this.cost.entrySet()) {
-            final ItemStack item = entry.getKey(); // Hope this is not being modified
+        for (final Map.Entry<Material, Integer> entry : this.cost.entrySet()) {
+            final ItemStack item = new ItemStack(entry.getKey()); // Hope this is not being modified
+            int amount = entry.getValue();
 
             for (int i = 0; i < contents.length; i++) {
                 final ItemStack content = contents[i];
@@ -71,19 +69,15 @@ public class ShopItem {
         final PlayerInventory inv = buyer.getInventory();
 
         // Check if the player has enough resources to buy the item.
-        for (final Map.Entry<ItemStack, Integer> entry : this.cost.entrySet()) {
-            final ItemStack item = entry.getKey();
+        for (final Map.Entry<Material, Integer> entry : this.cost.entrySet()) {
+            final Material item = entry.getKey();
             final int amount = entry.getValue();
 
-            if (!inv.containsAtLeast(item, amount))
+            if (!inv.contains(item, amount))
                 return false;
         }
 
         return true;
-    }
-
-    public String getName() {
-        return this.name;
     }
 
     public ItemStack getItem() {
@@ -94,21 +88,12 @@ public class ShopItem {
         this.item = item;
     }
 
-    public Map<ItemStack, Integer> getCost() {
-        return this.cost;
+    public Map<Material, Integer> getCost() {
+        return cost;
     }
 
-    public void setCost(Map<ItemStack, Integer> cost) {
+    public void setCost(Map<Material, Integer> cost) {
         this.cost = cost;
     }
-
-    public int getAmount() {
-        return this.amount;
-    }
-
-    public void setAmount(int amount) {
-        this.amount = amount;
-    }
-
 
 }
