@@ -50,6 +50,7 @@ tasks {
         this.archiveClassifier.set("")
 
         this.relocate("org.jetbrains.annotations", "in.oribu.bedwars.libs.annotations")
+        this.relocate("org.intellij.lang", "in.oribu.bedwars.libs.intellij")
         this.relocate("dev.rosewood.rosegarden", "in.oribu.bedwars.libs.rosegarden")
 
         this.exclude("dev/rosewood/rosegarden/lib/hikaricp/**/*.class")
