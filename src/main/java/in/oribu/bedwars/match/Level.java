@@ -49,7 +49,7 @@ public class Level {
         // Load the map schematic into the world.
         final PluginManager manager = Bukkit.getPluginManager();
         if (manager.isPluginEnabled("FastAsyncWorldEdit") || manager.isPluginEnabled("AsyncWorldEdit")) {
-            Bukkit.getScheduler().runTaskAsynchronously(BedwarsPlugin.get(), () -> this.paste());
+            Bukkit.getScheduler().runTaskAsynchronously(BedwarsPlugin.get(), this::paste);
         } else {
             this.paste();
         }

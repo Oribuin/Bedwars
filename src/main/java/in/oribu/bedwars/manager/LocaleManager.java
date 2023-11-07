@@ -5,7 +5,10 @@ import dev.rosewood.rosegarden.manager.AbstractLocaleManager;
 import dev.rosewood.rosegarden.utils.HexUtils;
 import dev.rosewood.rosegarden.utils.StringPlaceholders;
 import org.bukkit.command.CommandSender;
+import org.checkerframework.checker.units.qual.N;
+import org.jetbrains.annotations.NotNull;
 
+import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -116,14 +119,38 @@ public class LocaleManager extends AbstractLocaleManager {
      * @param placeholders The placeholders to apply to the message
      * @return The formatted string
      */
+    @Nullable
     public String format(CommandSender sender, String message, StringPlaceholders placeholders) {
-        if (message.isEmpty())
-            return "";
+        if (message == null || message.isEmpty())
+            return null;
 
         if (placeholders == null)
             placeholders = StringPlaceholders.empty();
 
         return HexUtils.colorify(this.parsePlaceholders(sender, placeholders.apply(message)));
+    }
+
+    /**
+     * Format a list of strings with placeholders
+     *
+     * @param sender       The CommandSender to send the message to
+     * @param messages     The messages to send
+     * @param placeholders The placeholders to apply to the messages
+     * @return The formatted string
+     */
+    @NotNull
+    public List<String> format(CommandSender sender, List<String> messages, StringPlaceholders placeholders) {
+        if (messages.isEmpty())
+            return List.of();
+
+        if (placeholders == null)
+            placeholders = StringPlaceholders.empty();
+
+        List<String> formattedMessages = new ArrayList<>();
+        for (String message : messages) {
+            formattedMessages.add(HexUtils.colorify(this.parsePlaceholders(sender, placeholders.apply(message))));
+        }
+        return formattedMessages;
     }
 
 

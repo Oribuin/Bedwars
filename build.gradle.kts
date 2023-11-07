@@ -39,9 +39,9 @@ dependencies {
     compileOnly("org.spigotmc:spigot-api:1.20.2-R0.1-SNAPSHOT")
 
     // Plugin Dependencies
-    compileOnly("com.sk89q.worldedit:worldedit-bukkit:7.3.0-SNAPSHOT") {
-        exclude(group = "org.github")
-    }
+    compileOnly("com.mojang:authlib:1.5.21")
+    compileOnly("com.sk89q.worldedit:worldedit-bukkit:7.3.0-SNAPSHOT")
+    compileOnly("com.arcaniax:HeadDatabase-API:1.3.1")
 }
 
 tasks {

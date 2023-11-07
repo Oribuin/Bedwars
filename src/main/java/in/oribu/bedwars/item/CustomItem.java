@@ -1,17 +1,21 @@
 package in.oribu.bedwars.item;
 
+import dev.rosewood.rosegarden.config.CommentedConfigurationSection;
 import in.oribu.bedwars.storage.DataKeys;
 import in.oribu.bedwars.upgrade.ContextHandler;
-import org.bukkit.Material;
-import org.bukkit.entity.Player;
+import in.oribu.bedwars.util.BedwarsUtil;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
+import org.jetbrains.annotations.NotNull;
+
+import javax.annotation.Nullable;
 
 public abstract class CustomItem {
 
     protected final String name;
+    private ItemStack item;
 
     protected CustomItem(String name) {
         this.name = name;
@@ -25,22 +29,35 @@ public abstract class CustomItem {
     public abstract void event(ContextHandler handler);
 
     /**
-     * Give the item to the player
+     * Create the custom item from a CommentedConfigurationSection
      *
-     * @param player The player to give the item to
+     * @param section The section to create from
+     * @param key     The key to create from
+     * @return The created custom item
      */
-    public void give(Player player) {
-        final ItemStack item = new ItemStack(Material.EGG);
+    @Nullable
+    public ItemStack getItem(@NotNull CommentedConfigurationSection section, @NotNull String key) {
+        final ItemStack item = BedwarsUtil.deserialize(section, key);
+        if (item == null) return null;
         final ItemMeta meta = item.getItemMeta();
-        if (meta == null) return;
+        if (meta == null) return null;
 
         final PersistentDataContainer container = meta.getPersistentDataContainer();
-        container.set(DataKeys.CUSTOM_PROJECTILE, PersistentDataType.STRING, this.name);
+        container.set(DataKeys.CUSTOM_ITEM, PersistentDataType.STRING, this.name);
 
         meta.setDisplayName(this.name);
         item.setItemMeta(meta);
 
-        player.getInventory().addItem(item);
+        this.item = item;
+        return this.item;
+    }
+
+    public ItemStack getItem() {
+        if (this.item == null) {
+            throw new IllegalStateException("Item has not been initialized yet");
+        }
+
+        return item;
     }
 
     public String getName() {
