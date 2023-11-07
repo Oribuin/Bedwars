@@ -6,10 +6,15 @@ import in.oribu.bedwars.item.ItemRegistry;
 import in.oribu.bedwars.storage.DataKeys;
 import in.oribu.bedwars.upgrade.ContextHandler;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.Projectile;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.block.BlockPlaceEvent;
+import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
+import org.bukkit.event.entity.ProjectileHitEvent;
 import org.bukkit.event.entity.ProjectileLaunchEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
@@ -47,22 +52,77 @@ public class CustomItemListener implements Listener {
 
         item.event(new ContextHandler(event, null, player));
     }
+
+    @EventHandler(ignoreCancelled = true, priority = EventPriority.LOW)
+    public void onHit(ProjectileHitEvent event) {
+        final Projectile projectile = event.getEntity();
+        final PersistentDataContainer container = projectile.getPersistentDataContainer();
+        final String projectileType = container.get(DataKeys.CUSTOM_PROJECTILE, PersistentDataType.STRING);
+        final CustomItem customItem = ItemRegistry.get(projectileType);
+        if (customItem == null) return;
+
+        customItem.event(new ContextHandler(event, null, null));
+    }
+
+    @EventHandler(ignoreCancelled = true)
+    public void onSpawn(CreatureSpawnEvent event) {
+        // Stop eggs from spawning
+        if (event.getSpawnReason() == CreatureSpawnEvent.SpawnReason.EGG) {
+            event.setCancelled(true);
+        }
     }
 
     @EventHandler(ignoreCancelled = true, priority = EventPriority.LOW)
     public void onInteract(PlayerInteractEvent event) {
         final ItemStack item = event.getItem();
         if (item == null) return;
-
         final ItemMeta meta = item.getItemMeta();
         if (meta == null) return;
 
         final PersistentDataContainer container = meta.getPersistentDataContainer();
-        final String projectileType = container.get(DataKeys.CUSTOM_PROJECTILE, PersistentDataType.STRING);
+        final String projectileType = container.get(DataKeys.CUSTOM_ITEM, PersistentDataType.STRING);
         final CustomItem customItem = ItemRegistry.get(projectileType);
         if (customItem == null) return;
 
         customItem.event(new ContextHandler(event, item, event.getPlayer()));
+    }
+
+    @EventHandler(ignoreCancelled = true, priority = EventPriority.LOW)
+    public void onPlace(BlockPlaceEvent event) {
+        final ItemStack item = event.getItemInHand();
+        final ItemMeta meta = item.getItemMeta();
+        if (meta == null) return;
+
+        final PersistentDataContainer container = meta.getPersistentDataContainer();
+        final String projectileType = container.get(DataKeys.CUSTOM_ITEM, PersistentDataType.STRING);
+        final CustomItem customItem = ItemRegistry.get(projectileType);
+        if (customItem == null) return;
+
+        customItem.event(new ContextHandler(event, item, event.getPlayer()));
+    }
+
+    @EventHandler(ignoreCancelled = true, priority = EventPriority.LOW)
+    public void onBreak(BlockBreakEvent event) {
+        final ItemStack item = event.getPlayer().getInventory().getItemInMainHand();
+        final ItemMeta meta = item.getItemMeta();
+        if (meta == null) return;
+
+        final PersistentDataContainer container = meta.getPersistentDataContainer();
+        final String projectileType = container.get(DataKeys.CUSTOM_ITEM, PersistentDataType.STRING);
+        final CustomItem customItem = ItemRegistry.get(projectileType);
+        if (customItem == null) return;
+
+        customItem.event(new ContextHandler(event, item, event.getPlayer()));
+    }
+
+    @EventHandler(ignoreCancelled = true, priority = EventPriority.LOW)
+    public void onEntityExplode(EntityExplodeEvent event) {
+        final PersistentDataContainer container = event.getEntity().getPersistentDataContainer();
+        final String projectileType = container.get(DataKeys.CUSTOM_PROJECTILE, PersistentDataType.STRING);
+        final CustomItem customItem = ItemRegistry.get(projectileType);
+        if (customItem == null) return;
+
+        customItem.event(new ContextHandler(event, null, null));
     }
 
 }
