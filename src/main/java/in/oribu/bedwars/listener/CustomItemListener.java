@@ -29,17 +29,24 @@ public class CustomItemListener implements Listener {
     public void onLaunch(ProjectileLaunchEvent event) {
         if (!(event.getEntity().getShooter() instanceof Player player)) return;
 
-        final PersistentDataContainer container = event.getEntity().getPersistentDataContainer();
-        final String projectileType = container.get(DataKeys.CUSTOM_PROJECTILE, PersistentDataType.STRING);
-        if (projectileType == null) return;
+        // We have to assume all projectiles being shot are custom projectiles
+        final String projectileType = switch (event.getEntity().getType()) {
+            case EGG -> "bridge_egg";
+            case FIREBALL -> "fireball";
+            case SNOWBALL -> "slow_ball";
+            default -> null;
+        };
 
         // Get the custom item from the registry
         final CustomItem item = ItemRegistry.get(projectileType);
         if (item == null) return;
 
         // Add the persistent data type.
-        // TODO: Check if ItemInMainHand is the projectile
-        item.event(new ContextHandler(event, player.getInventory().getItemInMainHand(), player));
+        final PersistentDataContainer container = event.getEntity().getPersistentDataContainer();
+        container.set(DataKeys.CUSTOM_PROJECTILE, PersistentDataType.STRING, projectileType);
+
+        item.event(new ContextHandler(event, null, player));
+    }
     }
 
     @EventHandler(ignoreCancelled = true, priority = EventPriority.LOW)
