@@ -47,7 +47,7 @@ dependencies {
 tasks {
 
     shadowJar {
-        this.archiveClassifier = null
+        this.archiveClassifier.set("")
 
         this.relocate("org.jetbrains.annotations", "in.oribu.bedwars.libs.annotations")
         this.relocate("dev.rosewood.rosegarden", "in.oribu.bedwars.libs.rosegarden")
