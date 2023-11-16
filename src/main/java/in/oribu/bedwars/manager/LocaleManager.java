@@ -5,7 +5,6 @@ import dev.rosewood.rosegarden.manager.AbstractLocaleManager;
 import dev.rosewood.rosegarden.utils.HexUtils;
 import dev.rosewood.rosegarden.utils.StringPlaceholders;
 import org.bukkit.command.CommandSender;
-import org.checkerframework.checker.units.qual.N;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
