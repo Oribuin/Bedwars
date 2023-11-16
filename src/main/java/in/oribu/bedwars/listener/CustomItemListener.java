@@ -11,6 +11,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.block.BlockDamageEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
@@ -123,6 +124,20 @@ public class CustomItemListener implements Listener {
         if (customItem == null) return;
 
         customItem.event(new ContextHandler(event, null, null));
+    }
+
+    @EventHandler(ignoreCancelled = true, priority = EventPriority.LOW)
+    public void onBlockDamage(BlockDamageEvent event) {
+        final ItemStack item = event.getItemInHand();
+        final ItemMeta meta = item.getItemMeta();
+        if (meta == null) return;
+
+        final PersistentDataContainer container = meta.getPersistentDataContainer();
+        final String projectileType = container.get(DataKeys.CUSTOM_ITEM, PersistentDataType.STRING);
+        final CustomItem customItem = ItemRegistry.get(projectileType);
+        if (customItem == null) return;
+
+        customItem.event(new ContextHandler(event, item, event.getPlayer()));
     }
 
 }
