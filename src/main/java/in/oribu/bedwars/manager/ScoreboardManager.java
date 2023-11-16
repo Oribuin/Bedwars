@@ -38,7 +38,7 @@ public class ScoreboardManager extends Manager implements Listener {
         final AtomicInteger slot = new AtomicInteger(-1);
         Setting.SCOREBOARD_LINES.getStringList().forEach((line) -> {
             final org.bukkit.scoreboard.Team team = this.scoreboard.registerNewTeam("bedwars-" + slot.incrementAndGet());
-            final String entry = ChatColor.values()[slot.get()].toString();
+            final String entry = ChatColor.values()[slot.get()].toString() + ChatColor.RESET;
 
             team.addEntry(entry);
             final Score score = this.objective.getScore(entry);

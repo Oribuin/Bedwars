@@ -13,6 +13,8 @@ import org.bukkit.entity.Egg;
 import org.bukkit.event.entity.ProjectileLaunchEvent;
 import org.bukkit.persistence.PersistentDataType;
 
+import java.util.List;
+
 /**
  * Spigot API Is terrible when it comes to projectiles, so we have to assume all egs are custom eggs
  * only trigger these eggs inside a match
@@ -39,7 +41,7 @@ public class BridgeEggItem extends CustomItem {
         egg.getPersistentDataContainer().set(
                 DataKeys.CUSTOM_PROJECTILE,
                 PersistentDataType.STRING,
-                this.name
+                this.getName()
         );
 
         Bukkit.getScheduler().runTaskTimer(BedwarsPlugin.get(), task -> {
@@ -69,24 +71,20 @@ public class BridgeEggItem extends CustomItem {
     private void createBridge(Location location) {
         // Make the center the block behind the egg
         final Block center = location.clone().subtract(0, 2, 0).getBlock();
-
-        // Create a square around the center
-//        for (int x = -2; x <= 0; x++) {
-//            for (int z = -2; z <= 0; z++) {
-//                final Block block = center.getRelative(x, 0, z);
-//                if (!block.getType().isAir()) continue;
-//                block.setType(Material.WHITE_WOOL);
-//            }
-//        }
-
-        // Create a star around the center
         final BlockData data = Material.WHITE_WOOL.createBlockData();
+        final List<Block> blocks = List.of(
+                center.getRelative(1, 0, 0),
+                center.getRelative(-1, 0, 0),
+                center.getRelative(0, 0, 1),
+                center.getRelative(0, 0, -1),
+                center
+        );
 
-        center.getRelative(1, 0, 0).setBlockData(data, false);
-        center.getRelative(-1, 0, 0).setBlockData(data, false);
-        center.getRelative(0, 0, 1).setBlockData(data, false);
-        center.getRelative(0, 0, -1).setBlockData(data, false);
-        center.setBlockData(data, false);
+        blocks.forEach(block -> {
+            if (!block.getType().isAir()) return;
+            block.setBlockData(data, false);
+        });
+
     }
 
 }

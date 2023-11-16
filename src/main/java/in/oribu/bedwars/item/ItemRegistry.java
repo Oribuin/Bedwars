@@ -24,7 +24,7 @@ public final class ItemRegistry {
      * @param item The custom item
      */
     public static void register(@NotNull CustomItem item) {
-        items.put(item.name, item);
+        items.put(item.getName(), item);
     }
 
     /**

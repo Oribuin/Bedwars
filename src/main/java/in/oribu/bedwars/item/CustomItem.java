@@ -1,9 +1,14 @@
 package in.oribu.bedwars.item;
 
 import dev.rosewood.rosegarden.config.CommentedConfigurationSection;
+import dev.rosewood.rosegarden.utils.HexUtils;
 import in.oribu.bedwars.storage.DataKeys;
 import in.oribu.bedwars.upgrade.ContextHandler;
 import in.oribu.bedwars.util.BedwarsUtil;
+import in.oribu.bedwars.util.ItemBuilder;
+import org.bukkit.Material;
+import org.bukkit.block.data.type.Switch;
+import org.bukkit.entity.Item;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataContainer;
@@ -11,13 +16,14 @@ import org.bukkit.persistence.PersistentDataType;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
+import java.util.Locale;
 
 public abstract class CustomItem {
 
-    protected final String name;
+    private final String name;
     private ItemStack item;
 
-    protected CustomItem(String name) {
+    public CustomItem(String name) {
         this.name = name;
     }
 
@@ -45,7 +51,6 @@ public abstract class CustomItem {
         final PersistentDataContainer container = meta.getPersistentDataContainer();
         container.set(DataKeys.CUSTOM_ITEM, PersistentDataType.STRING, this.name);
 
-        meta.setDisplayName(this.name);
         item.setItemMeta(meta);
 
         this.item = item;
@@ -54,7 +59,19 @@ public abstract class CustomItem {
 
     public ItemStack getItem() {
         if (this.item == null) {
-            throw new IllegalStateException("Item has not been initialized yet");
+
+            // Placeholder stuff until the shop is implemented
+            this.item = new ItemBuilder(Material.DIAMOND)
+                    .name(HexUtils.colorify("<r:0.5>" + this.name))
+                    .build();
+
+            final ItemMeta meta = this.item.getItemMeta();
+            if (meta == null) return this.item;
+
+            final PersistentDataContainer container = meta.getPersistentDataContainer();
+            container.set(DataKeys.CUSTOM_ITEM, PersistentDataType.STRING, this.name);
+
+            this.item.setItemMeta(meta);
         }
 
         return item;
