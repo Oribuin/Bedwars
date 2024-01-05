@@ -21,4 +21,40 @@ public class PlayerListeners implements Listener {
         event.getPlayer().setScoreboard(this.manager.getScoreboard());
     }
 
+//    private final Map<UUID, ItemStack> lastThrown = new HashMap<>();
+//    private final Map<Material, EntityType> projectileTypes = Map.of(
+//            Material.EGG, EntityType.EGG,
+//            Material.ENDER_PEARL, EntityType.ENDER_PEARL,
+//            Material.ENDER_EYE, EntityType.ENDER_SIGNAL,
+//            Material.SNOWBALL, EntityType.SNOWBALL
+//    );
+//
+//    @EventHandler
+//    public void onInteract(PlayerInteractEvent event) {
+//        final ItemStack hand = event.getItem();
+//        if (hand == null) return;
+//
+//        if (this.projectileTypes.containsKey(hand.getType())) {
+//            this.lastThrown.put(event.getPlayer().getUniqueId(), hand);
+//        }
+//    }
+//
+//    @EventHandler
+//    public void onLaunch(ProjectileLaunchEvent event) {
+//        final Projectile projectile = event.getEntity();
+//        final ProjectileSource shooter = projectile.getShooter();
+//        if (!(projectile instanceof ThrowableProjectile)) return;
+//        if (!(shooter instanceof Player player)) return;
+//        if (!(this.projectileTypes.containsValue(projectile.getType()))) return;
+//
+//        final ItemStack item = this.lastThrown.get(player.getUniqueId());
+//        final EntityType type = this.projectileTypes.get(item.getType());
+//
+//        if (projectile.getType() != type) return;
+//
+//        this.lastThrown.remove(player.getUniqueId());
+//        player.sendMessage("You threw a " + item + "!");
+//    }
+
+
 }

@@ -44,7 +44,7 @@ public class ItemBuilder {
      * @return Item.Builder.
      */
     public ItemBuilder name(@Nullable String text) {
-        final ItemMeta meta = this.item.getItemMeta();
+        ItemMeta meta = this.item.getItemMeta();
         if (meta == null || text == null)
             return this;
 

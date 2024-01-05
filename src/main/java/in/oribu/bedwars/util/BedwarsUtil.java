@@ -89,9 +89,9 @@ public final class BedwarsUtil {
     /**
      * Deserialize an ItemStack from a CommentedConfigurationSection with placeholders
      *
-     * @param section      The section to deserialize from
-     * @param sender       The CommandSender to apply placeholders from
-     * @param key          The key to deserialize from
+     * @param section The section to deserialize from
+     * @param sender  The CommandSender to apply placeholders from
+     * @param key     The key to deserialize from
      * @return The deserialized ItemStack
      */
     @Nullable

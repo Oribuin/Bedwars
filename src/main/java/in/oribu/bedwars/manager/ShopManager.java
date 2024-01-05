@@ -49,79 +49,92 @@ public class ShopManager extends Manager {
         // Load all the shops
         Arrays.stream(files)
                 .filter(file -> file.getName().endsWith(".yml"))
-                .forEach(file -> {
-                    final CommentedFileConfiguration config = CommentedFileConfiguration.loadConfiguration(file);
+                .forEach(this::loadShop);
+    }
 
-                    final String shopName = config.getString("name");
-                    final int size = config.getInt("size", 27);
-                    if (shopName == null) {
-                        this.rosePlugin.getLogger().warning("Unable to find the name of the shop " + file.getName() + ".");
-                        return;
-                    }
+    /**
+     * Load and cache a shop from a file in the /Bedwars/shops folder
+     *
+     * @param file The file
+     */
+    public void loadShop(File file) {
+        final CommentedFileConfiguration config = CommentedFileConfiguration.loadConfiguration(file);
 
-                    final Map<Integer, ShopItem> items = new HashMap<>();
-                    final CommentedConfigurationSection itemsSection = config.getConfigurationSection("items");
-                    if (itemsSection == null || itemsSection.getKeys(false).isEmpty()) {
-                        this.rosePlugin.getLogger().warning("Unable to find any items in the shop " + file.getName() + ".");
-                        return;
-                    }
+        final String shopName = config.getString("name");
+        final int size = config.getInt("size", 27);
+        if (shopName == null) {
+            this.rosePlugin.getLogger().warning("Unable to find the name of the shop " + file.getName() + ".");
+            return;
+        }
 
-                    // Load all the shop items.
-                    for (String key : itemsSection.getKeys(false)) {
+        final Map<Integer, ShopItem> items = new HashMap<>();
+        final CommentedConfigurationSection itemsSection = config.getConfigurationSection("items");
+        if (itemsSection == null || itemsSection.getKeys(false).isEmpty()) {
+            this.rosePlugin.getLogger().warning("Unable to find any items in the shop " + file.getName() + ".");
+            return;
+        }
 
-                        int slot;
-                        try {
-                            slot = Integer.parseInt(key);
-                        } catch (NumberFormatException ignored) {
-                            this.rosePlugin.getLogger().warning("Unable to parse the slot " + key + " in the shop " + file.getName() + ".");
-                            continue;
-                        }
+        // Load all the shop items.
+        for (String key : itemsSection.getKeys(false)) {
 
-                        // Load the itemstack from the shop
-                        ItemStack result;
-                        final CustomItem item = ItemRegistry.get(itemsSection.getString(key + ".custom-item"));
-                        if (item != null) {
-                            result = item.getItem(itemsSection, key);
-                        } else {
-                            result = BedwarsUtil.deserialize(itemsSection, key);
-                        }
+            int slot;
+            try {
+                slot = Integer.parseInt(key);
+            } catch (NumberFormatException ignored) {
+                this.rosePlugin.getLogger().warning("Unable to parse the slot " + key + " in the shop " + file.getName() + ".");
+                continue;
+            }
 
-                        if (result == null) {
-                            this.rosePlugin.getLogger().warning("Unable to parse the item in the shop " + file.getName() + ".");
-                            continue;
-                        }
+            // Load the itemstack from the shop
+            CustomItem item = ItemRegistry.get(itemsSection.getString(key + ".custom-item"));
+            ItemStack result;
+            System.out.println("Custom item: " + item);
+            if (item != null) {
+                result = item.getItem(itemsSection, key);
+            } else {
+                result = BedwarsUtil.deserialize(itemsSection, key);
+            }
 
-                        // Load the cost of the item
-                        final CommentedConfigurationSection costSection = itemsSection.getConfigurationSection(key + ".cost");
-                        if (costSection == null) {
-                            this.rosePlugin.getLogger().warning("Unable to parse the cost of the item in the shop " + file.getName() + ".");
-                            continue;
-                        }
+            if (result == null) {
+                String isCustom = itemsSection.getString(key + ".custom-item") == null ? "vanilla" : "custom";
+                this.rosePlugin.getLogger().warning("Unable to parse the " + isCustom + " item " + file.getName() + ".");
+                continue;
+            }
 
-                        final Map<Material, Integer> cost = new HashMap<>();
-                        for (String costKey : costSection.getKeys(false)) {
-                            final Material costMaterial = Material.getMaterial(costKey);
-                            final int amount = costSection.getInt(costKey);
+            // Load the cost of the item
+            CommentedConfigurationSection costSection = itemsSection.getConfigurationSection(key + ".cost");
+            if (costSection == null) {
+                this.rosePlugin.getLogger().warning("Unable to parse the cost of the item in the shop " + file.getName() + ".");
+                continue;
+            }
 
-                            if (costMaterial == null) {
-                                continue;
-                            }
+            Map<Material, Integer> cost = new HashMap<>();
+            for (String costKey : costSection.getKeys(false)) {
+                final Material costMaterial = Material.getMaterial(costKey);
+                final int amount = costSection.getInt(costKey);
 
-                            cost.put(costMaterial, amount);
-                        }
+                if (costMaterial == null) {
+                    continue;
+                }
 
-                        final ShopItem shopItem = new ShopItem(result, cost);
-                        items.put(slot, shopItem);
-                    }
+                cost.put(costMaterial, amount);
+            }
 
-                    final Shop shop = new Shop(shopName, items, size);
-                    this.shops.put(shopName, shop);
-                });
+            final ShopItem shopItem = new ShopItem(result, cost);
+            items.put(slot, shopItem);
+        }
+
+        final Shop shop = new Shop(shopName, items, size);
+        this.shops.put(shopName, shop);
+    }
+
+    public Map<String, Shop> getShops() {
+        return shops;
     }
 
     @Override
     public void disable() {
-
+        this.shops.clear();
     }
 
 }

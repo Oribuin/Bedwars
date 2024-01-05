@@ -33,10 +33,14 @@ repositories {
 
 dependencies {
     api("dev.rosewood:rosegarden:1.2.5")
-    api("org.jetbrains:annotations:24.0.0")
+    api("dev.triumphteam:triumph-gui:3.1.7") {
+        exclude(group = "com.google.code.gson", module = "gson")
+        exclude(group = "net.kyori", module = "*")
+    }
 
-//    compileOnly("io.papermc.paper:paper-api:1.20.2-R0.1-SNAPSHOT")
-    compileOnly("org.spigotmc:spigot-api:1.20.2-R0.1-SNAPSHOT")
+    compileOnly("org.jetbrains:annotations:24.0.0")
+    compileOnly("io.papermc.paper:paper-api:1.20.2-R0.1-SNAPSHOT")
+//    compileOnly("org.spigotmc:spigot-api:1.20.2-R0.1-SNAPSHOT")
 
     // Plugin Dependencies
     compileOnly("com.mojang:authlib:1.5.21")
@@ -49,9 +53,8 @@ tasks {
     shadowJar {
         this.archiveClassifier.set("")
 
-        this.relocate("org.jetbrains.annotations", "in.oribu.bedwars.libs.annotations")
-        this.relocate("org.intellij.lang", "in.oribu.bedwars.libs.intellij")
         this.relocate("dev.rosewood.rosegarden", "in.oribu.bedwars.libs.rosegarden")
+        this.relocate("dev.triumphteam.gui", "in.oribu.bedwars.libs.gui")
 
         this.exclude("dev/rosewood/rosegarden/lib/hikaricp/**/*.class")
         this.exclude("dev/rosewood/rosegarden/lib/slf4j/**/*.class")

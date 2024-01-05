@@ -7,8 +7,6 @@ import in.oribu.bedwars.upgrade.ContextHandler;
 import in.oribu.bedwars.util.BedwarsUtil;
 import in.oribu.bedwars.util.ItemBuilder;
 import org.bukkit.Material;
-import org.bukkit.block.data.type.Switch;
-import org.bukkit.entity.Item;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataContainer;
@@ -16,7 +14,6 @@ import org.bukkit.persistence.PersistentDataType;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
-import java.util.Locale;
 
 public abstract class CustomItem {
 

@@ -1,6 +1,5 @@
 package in.oribu.bedwars.match;
 
-import dev.rosewood.rosegarden.utils.NMSUtil;
 import in.oribu.bedwars.storage.Stats;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;

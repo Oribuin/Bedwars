@@ -8,6 +8,8 @@ import in.oribu.bedwars.manager.CommandManager;
 import in.oribu.bedwars.manager.ConfigurationManager;
 import in.oribu.bedwars.manager.DataManager;
 import in.oribu.bedwars.manager.LocaleManager;
+import in.oribu.bedwars.manager.ScoreboardManager;
+import in.oribu.bedwars.manager.ShopManager;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.PluginManager;
 
@@ -35,7 +37,7 @@ public class BedwarsPlugin extends RosePlugin {
 
     @Override
     public void enable() {
-        final PluginManager pluginManager = Bukkit.getPluginManager();
+        PluginManager pluginManager = Bukkit.getPluginManager();
 
         // Register Listeners
         pluginManager.registerEvents(new CustomItemListener(this), this);
@@ -50,7 +52,7 @@ public class BedwarsPlugin extends RosePlugin {
 
     @Override
     public List<Class<? extends Manager>> getManagerLoadPriority() {
-        return List.of();
+        return List.of(ScoreboardManager.class, ShopManager.class);
     }
 
 }
