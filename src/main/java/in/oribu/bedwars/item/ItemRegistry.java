@@ -24,7 +24,17 @@ public final class ItemRegistry {
      * @param item The custom item
      */
     public static void register(@NotNull CustomItem item) {
-        items.put(item.getName(), item);
+        items.put(item.getName().toLowerCase(), item);
+    }
+
+    /**
+     * Register a custom item into the registry
+     *
+     * @param name The name of the custom item
+     * @param item The custom item
+     */
+    public static void register(@NotNull String name, @NotNull CustomItem item) {
+        items.put(name.toLowerCase(), item);
     }
 
     /**
