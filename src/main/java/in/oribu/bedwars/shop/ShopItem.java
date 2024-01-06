@@ -31,32 +31,30 @@ public class ShopItem {
         }
 
         // Remove the resources from the player's inventory.
-        PlayerInventory inv = buyer.getInventory();
-        ItemStack[] contents = inv.getStorageContents();
-
-        for (final Map.Entry<Material, Integer> entry : this.cost.entrySet()) {
+        for (Map.Entry<Material, Integer> entry : this.cost.entrySet()) {
             ItemStack item = new ItemStack(entry.getKey()); // Hope this is not being modified
             int amount = entry.getValue();
 
-            for (int i = 0; i < contents.length; i++) {
-                ItemStack content = contents[i];
-
+            // Go through the player's inventory and remove the resources.
+            for (ItemStack content : buyer.getInventory().getStorageContents()) {
                 if (content == null || content.getType().isAir()) continue;
                 if (!content.isSimilar(item)) continue;
 
-                if (content.getAmount() > amount) {
-                    content.setAmount(content.getAmount() - amount);
-                    amount = 0;
-                } else {
-                    amount -= content.getAmount();
-                    contents[i] = null;
-                }
-
-                if (amount == 0)
+                int contentAmount = content.getAmount();
+                if (contentAmount > amount) {
+                    content.setAmount(contentAmount - amount);
                     break;
+                } else if (contentAmount == amount) {
+                    content.setAmount(0);
+                    break;
+                } else {
+                    amount -= contentAmount;
+                    content.setAmount(0);
+                }
             }
         }
 
+        buyer.getInventory().addItem(this.item.clone());
     }
 
     /**
@@ -69,7 +67,7 @@ public class ShopItem {
         PlayerInventory inv = buyer.getInventory();
 
         // Check if the player has enough resources to buy the item.
-        for (final Map.Entry<Material, Integer> entry : this.cost.entrySet()) {
+        for (Map.Entry<Material, Integer> entry : this.cost.entrySet()) {
             Material item = entry.getKey();
             int amount = entry.getValue();
 

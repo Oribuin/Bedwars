@@ -120,8 +120,7 @@ public class ShopManager extends Manager {
                 cost.put(costMaterial, amount);
             }
 
-            ShopItem shopItem = new ShopItem(result, cost);
-            items.put(slot, shopItem);
+            items.put(slot, new ShopItem(result, cost));
         }
 
         Shop shop = new Shop(shopName, items, size);

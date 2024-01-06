@@ -78,7 +78,7 @@ public class Level {
         }
 
         Clipboard finalClipboard = clipboard;
-        try (final EditSession session = WorldEdit.getInstance().newEditSessionBuilder()
+        try (EditSession session = WorldEdit.getInstance().newEditSessionBuilder()
                 .world(BukkitAdapter.adapt(this.center.getWorld()))
                 .maxBlocks(-1)
                 .build()

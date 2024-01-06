@@ -63,7 +63,7 @@ public class DataManager extends AbstractDataManager {
             try (PreparedStatement statement = connection.prepareStatement(query)) {
 
                 // Save every player within the match.
-                for (final MatchPlayer player : match.getPlayers()) {
+                for (MatchPlayer player : match.getPlayers()) {
                     Stats stats = this.userCache.getOrDefault(
                             player.getUUID(),
                             new Stats()

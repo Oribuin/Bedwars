@@ -40,13 +40,13 @@ public final class BedwarsUtil {
             @NotNull StringPlaceholders placeholders
     ) {
         LocaleManager locale = BedwarsPlugin.get().getManager(LocaleManager.class);
-
         Material material = Material.getMaterial(section.getString(key + ".material", ""));
         if (material == null) return null;
 
+
         // Load enchantments
         Map<Enchantment, Integer> enchantments = new HashMap<>();
-        ConfigurationSection enchantmentSection = section.getConfigurationSection(key + ".enchantments");
+        CommentedConfigurationSection enchantmentSection = section.getConfigurationSection(key + ".enchantments");
         if (enchantmentSection != null) {
             for (String enchantmentKey : enchantmentSection.getKeys(false)) {
                 Enchantment enchantment = Enchantment.getByKey(NamespacedKey.minecraft(enchantmentKey.toLowerCase()));
@@ -63,7 +63,7 @@ public final class BedwarsUtil {
 
         return new ItemBuilder(material)
                 .name(locale.format(sender, section.getString(key + ".name"), placeholders))
-                .amount(Math.min(0, section.getInt(key + ".amount", 0)))
+                .amount(Math.max(1, Math.min(material.getMaxStackSize(), section.getInt(key + ".amount", 1))))
                 .lore(section.getStringList(key + ".lore"))
                 .glow(section.getBoolean(key + ".glowing", false))
                 .unbreakable(section.getBoolean(key + ".unbreakable", false))
