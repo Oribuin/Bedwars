@@ -18,9 +18,9 @@ public class CustomItemArgumentHandler extends RoseCommandArgumentHandler<Custom
 
     @Override
     protected CustomItem handleInternal(RoseCommandArgumentInfo argumentInfo, ArgumentParser argumentParser) throws HandledArgumentException {
-        final String input = argumentParser.next();
+        String input = argumentParser.next();
 
-        final CustomItem customItem = ItemRegistry.get(input);
+        CustomItem customItem = ItemRegistry.get(input);
         if (customItem != null)
             return customItem;
 

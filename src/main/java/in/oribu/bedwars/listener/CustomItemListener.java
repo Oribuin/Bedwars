@@ -36,7 +36,7 @@ public class CustomItemListener implements Listener {
         if (!(event.getEntity().getShooter() instanceof Player player)) return;
 
         // We have to assume all projectiles being shot are custom projectiles
-        final String projectileType = switch (event.getEntity().getType()) {
+        String projectileType = switch (event.getEntity().getType()) {
             case EGG -> "bridge_egg";
             case FIREBALL -> "fireball";
             case SNOWBALL -> "slow_ball";
@@ -44,11 +44,11 @@ public class CustomItemListener implements Listener {
         };
 
         // Get the custom item from the registry
-        final CustomItem item = ItemRegistry.get(projectileType);
+        CustomItem item = ItemRegistry.get(projectileType);
         if (item == null) return;
 
         // Add the persistent data type.
-        final PersistentDataContainer container = event.getEntity().getPersistentDataContainer();
+        PersistentDataContainer container = event.getEntity().getPersistentDataContainer();
         container.set(DataKeys.CUSTOM_PROJECTILE, PersistentDataType.STRING, projectileType);
 
         item.event(new ContextHandler(event, null, player));
@@ -56,10 +56,10 @@ public class CustomItemListener implements Listener {
 
     @EventHandler(ignoreCancelled = true, priority = EventPriority.LOW)
     public void onHit(ProjectileHitEvent event) {
-        final Projectile projectile = event.getEntity();
-        final PersistentDataContainer container = projectile.getPersistentDataContainer();
-        final String projectileType = container.get(DataKeys.CUSTOM_PROJECTILE, PersistentDataType.STRING);
-        final CustomItem customItem = ItemRegistry.get(projectileType);
+        Projectile projectile = event.getEntity();
+        PersistentDataContainer container = projectile.getPersistentDataContainer();
+        String projectileType = container.get(DataKeys.CUSTOM_PROJECTILE, PersistentDataType.STRING);
+        CustomItem customItem = ItemRegistry.get(projectileType);
         if (customItem == null) return;
 
         customItem.event(new ContextHandler(event, null, null));
@@ -75,14 +75,14 @@ public class CustomItemListener implements Listener {
 
     @EventHandler(ignoreCancelled = true, priority = EventPriority.LOW)
     public void onInteract(PlayerInteractEvent event) {
-        final ItemStack item = event.getItem();
+        ItemStack item = event.getItem();
         if (item == null) return;
-        final ItemMeta meta = item.getItemMeta();
+        ItemMeta meta = item.getItemMeta();
         if (meta == null) return;
 
-        final PersistentDataContainer container = meta.getPersistentDataContainer();
-        final String projectileType = container.get(DataKeys.CUSTOM_ITEM, PersistentDataType.STRING);
-        final CustomItem customItem = ItemRegistry.get(projectileType);
+        PersistentDataContainer container = meta.getPersistentDataContainer();
+        String projectileType = container.get(DataKeys.CUSTOM_ITEM, PersistentDataType.STRING);
+        CustomItem customItem = ItemRegistry.get(projectileType);
         if (customItem == null) return;
 
         customItem.event(new ContextHandler(event, item, event.getPlayer()));
@@ -90,13 +90,13 @@ public class CustomItemListener implements Listener {
 
     @EventHandler(ignoreCancelled = true, priority = EventPriority.LOW)
     public void onPlace(BlockPlaceEvent event) {
-        final ItemStack item = event.getItemInHand();
-        final ItemMeta meta = item.getItemMeta();
+        ItemStack item = event.getItemInHand();
+        ItemMeta meta = item.getItemMeta();
         if (meta == null) return;
 
-        final PersistentDataContainer container = meta.getPersistentDataContainer();
-        final String projectileType = container.get(DataKeys.CUSTOM_ITEM, PersistentDataType.STRING);
-        final CustomItem customItem = ItemRegistry.get(projectileType);
+        PersistentDataContainer container = meta.getPersistentDataContainer();
+        String projectileType = container.get(DataKeys.CUSTOM_ITEM, PersistentDataType.STRING);
+        CustomItem customItem = ItemRegistry.get(projectileType);
         if (customItem == null) return;
 
         customItem.event(new ContextHandler(event, item, event.getPlayer()));
@@ -104,13 +104,13 @@ public class CustomItemListener implements Listener {
 
     @EventHandler(ignoreCancelled = true, priority = EventPriority.LOW)
     public void onBreak(BlockBreakEvent event) {
-        final ItemStack item = event.getPlayer().getInventory().getItemInMainHand();
-        final ItemMeta meta = item.getItemMeta();
+        ItemStack item = event.getPlayer().getInventory().getItemInMainHand();
+        ItemMeta meta = item.getItemMeta();
         if (meta == null) return;
 
-        final PersistentDataContainer container = meta.getPersistentDataContainer();
-        final String projectileType = container.get(DataKeys.CUSTOM_ITEM, PersistentDataType.STRING);
-        final CustomItem customItem = ItemRegistry.get(projectileType);
+        PersistentDataContainer container = meta.getPersistentDataContainer();
+        String projectileType = container.get(DataKeys.CUSTOM_ITEM, PersistentDataType.STRING);
+        CustomItem customItem = ItemRegistry.get(projectileType);
         if (customItem == null) return;
 
         customItem.event(new ContextHandler(event, item, event.getPlayer()));
@@ -118,9 +118,9 @@ public class CustomItemListener implements Listener {
 
     @EventHandler(ignoreCancelled = true, priority = EventPriority.LOW)
     public void onEntityExplode(EntityExplodeEvent event) {
-        final PersistentDataContainer container = event.getEntity().getPersistentDataContainer();
-        final String projectileType = container.get(DataKeys.CUSTOM_PROJECTILE, PersistentDataType.STRING);
-        final CustomItem customItem = ItemRegistry.get(projectileType);
+        PersistentDataContainer container = event.getEntity().getPersistentDataContainer();
+        String projectileType = container.get(DataKeys.CUSTOM_PROJECTILE, PersistentDataType.STRING);
+        CustomItem customItem = ItemRegistry.get(projectileType);
         if (customItem == null) return;
 
         customItem.event(new ContextHandler(event, null, null));
@@ -128,13 +128,13 @@ public class CustomItemListener implements Listener {
 
     @EventHandler(ignoreCancelled = true, priority = EventPriority.LOW)
     public void onBlockDamage(BlockDamageEvent event) {
-        final ItemStack item = event.getItemInHand();
-        final ItemMeta meta = item.getItemMeta();
+        ItemStack item = event.getItemInHand();
+        ItemMeta meta = item.getItemMeta();
         if (meta == null) return;
 
-        final PersistentDataContainer container = meta.getPersistentDataContainer();
-        final String projectileType = container.get(DataKeys.CUSTOM_ITEM, PersistentDataType.STRING);
-        final CustomItem customItem = ItemRegistry.get(projectileType);
+        PersistentDataContainer container = meta.getPersistentDataContainer();
+        String projectileType = container.get(DataKeys.CUSTOM_ITEM, PersistentDataType.STRING);
+        CustomItem customItem = ItemRegistry.get(projectileType);
         if (customItem == null) return;
 
         customItem.event(new ContextHandler(event, item, event.getPlayer()));

@@ -40,12 +40,12 @@ public abstract class CustomItem {
      */
     @Nullable
     public ItemStack getItem(@NotNull CommentedConfigurationSection section, @NotNull String key) {
-        final ItemStack item = BedwarsUtil.deserialize(section, key);
+        ItemStack item = BedwarsUtil.deserialize(section, key);
         if (item == null) return null;
-        final ItemMeta meta = item.getItemMeta();
+        ItemMeta meta = item.getItemMeta();
         if (meta == null) return null;
 
-        final PersistentDataContainer container = meta.getPersistentDataContainer();
+        PersistentDataContainer container = meta.getPersistentDataContainer();
         container.set(DataKeys.CUSTOM_ITEM, PersistentDataType.STRING, this.name);
 
         item.setItemMeta(meta);
@@ -62,10 +62,10 @@ public abstract class CustomItem {
                     .name(HexUtils.colorify("<r:0.5>" + this.name))
                     .build();
 
-            final ItemMeta meta = this.item.getItemMeta();
+            ItemMeta meta = this.item.getItemMeta();
             if (meta == null) return this.item;
 
-            final PersistentDataContainer container = meta.getPersistentDataContainer();
+            PersistentDataContainer container = meta.getPersistentDataContainer();
             container.set(DataKeys.CUSTOM_ITEM, PersistentDataType.STRING, this.name);
 
             this.item.setItemMeta(meta);

@@ -25,7 +25,7 @@ public class ScoreboardManager extends Manager implements Listener {
     public ScoreboardManager(RosePlugin rosePlugin) {
         super(rosePlugin);
 
-        final org.bukkit.scoreboard.ScoreboardManager manager = Bukkit.getScoreboardManager();
+        org.bukkit.scoreboard.ScoreboardManager manager = Bukkit.getScoreboardManager();
         if (manager == null) return;
 
         this.scoreboard = manager.getNewScoreboard();
@@ -36,10 +36,10 @@ public class ScoreboardManager extends Manager implements Listener {
     @Override
     public void reload() {
         this.scoreboard.getTeams().forEach(org.bukkit.scoreboard.Team::unregister);
-        final AtomicInteger slot = new AtomicInteger(-1);
+        AtomicInteger slot = new AtomicInteger(-1);
         Setting.SCOREBOARD_LINES.getStringList().forEach((line) -> {
-            final org.bukkit.scoreboard.Team team = this.scoreboard.registerNewTeam("bedwars-" + slot.incrementAndGet());
-            final String entry = ChatColor.values()[slot.get()].toString() + ChatColor.RESET;
+            org.bukkit.scoreboard.Team team = this.scoreboard.registerNewTeam("bedwars-" + slot.incrementAndGet());
+            String entry = ChatColor.values()[slot.get()].toString() + ChatColor.RESET;
 
             team.addEntry(entry);
             this.objective.getScore(entry).setScore(15 - slot.get());
@@ -56,12 +56,12 @@ public class ScoreboardManager extends Manager implements Listener {
         if (this.objective == null) return;
         if (Bukkit.getOnlinePlayers().isEmpty()) return;
 
-        final String title = HexUtils.colorify(PlaceholderAPIHook.applyPlaceholders(null, Setting.SCOREBOARD_TITLE.getString()));
+        String title = HexUtils.colorify(PlaceholderAPIHook.applyPlaceholders(null, Setting.SCOREBOARD_TITLE.getString()));
         this.objective.setDisplayName(title.substring(0, Math.min(title.length(), 128)));
 
-        final AtomicInteger slot = new AtomicInteger(-1);
+        AtomicInteger slot = new AtomicInteger(-1);
         Setting.SCOREBOARD_LINES.getStringList().forEach((line) -> {
-            final org.bukkit.scoreboard.Team team = this.scoreboard.getTeam("bedwars-" + slot.incrementAndGet());
+            org.bukkit.scoreboard.Team team = this.scoreboard.getTeam("bedwars-" + slot.incrementAndGet());
             if (team == null) return;
 
             team.setSuffix(HexUtils.colorify(PlaceholderAPIHook.applyPlaceholders(null, line)));

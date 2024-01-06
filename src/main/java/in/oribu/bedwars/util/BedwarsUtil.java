@@ -39,17 +39,17 @@ public final class BedwarsUtil {
             @NotNull String key,
             @NotNull StringPlaceholders placeholders
     ) {
-        final LocaleManager locale = BedwarsPlugin.get().getManager(LocaleManager.class);
+        LocaleManager locale = BedwarsPlugin.get().getManager(LocaleManager.class);
 
-        final Material material = Material.getMaterial(section.getString(key + ".material", ""));
+        Material material = Material.getMaterial(section.getString(key + ".material", ""));
         if (material == null) return null;
 
         // Load enchantments
-        final Map<Enchantment, Integer> enchantments = new HashMap<>();
-        final ConfigurationSection enchantmentSection = section.getConfigurationSection(key + ".enchantments");
+        Map<Enchantment, Integer> enchantments = new HashMap<>();
+        ConfigurationSection enchantmentSection = section.getConfigurationSection(key + ".enchantments");
         if (enchantmentSection != null) {
             for (String enchantmentKey : enchantmentSection.getKeys(false)) {
-                final Enchantment enchantment = Enchantment.getByKey(NamespacedKey.minecraft(enchantmentKey.toLowerCase()));
+                Enchantment enchantment = Enchantment.getByKey(NamespacedKey.minecraft(enchantmentKey.toLowerCase()));
                 if (enchantment == null) continue;
 
                 enchantments.put(enchantment, enchantmentSection.getInt(enchantmentKey, 1));
@@ -57,7 +57,7 @@ public final class BedwarsUtil {
         }
 
         // Load potion item flags
-        final ItemFlag[] flags = section.getStringList(key + ".flags").stream()
+        ItemFlag[] flags = section.getStringList(key + ".flags").stream()
                 .map(ItemFlag::valueOf)
                 .toArray(ItemFlag[]::new);
 

@@ -31,15 +31,15 @@ public class ShopItem {
         }
 
         // Remove the resources from the player's inventory.
-        final PlayerInventory inv = buyer.getInventory();
-        final ItemStack[] contents = inv.getStorageContents();
+        PlayerInventory inv = buyer.getInventory();
+        ItemStack[] contents = inv.getStorageContents();
 
         for (final Map.Entry<Material, Integer> entry : this.cost.entrySet()) {
-            final ItemStack item = new ItemStack(entry.getKey()); // Hope this is not being modified
+            ItemStack item = new ItemStack(entry.getKey()); // Hope this is not being modified
             int amount = entry.getValue();
 
             for (int i = 0; i < contents.length; i++) {
-                final ItemStack content = contents[i];
+                ItemStack content = contents[i];
 
                 if (content == null || content.getType().isAir()) continue;
                 if (!content.isSimilar(item)) continue;
@@ -66,12 +66,12 @@ public class ShopItem {
      * @return If the player can buy the item
      */
     public boolean canBuy(Player buyer) {
-        final PlayerInventory inv = buyer.getInventory();
+        PlayerInventory inv = buyer.getInventory();
 
         // Check if the player has enough resources to buy the item.
         for (final Map.Entry<Material, Integer> entry : this.cost.entrySet()) {
-            final Material item = entry.getKey();
-            final int amount = entry.getValue();
+            Material item = entry.getKey();
+            int amount = entry.getValue();
 
             if (!inv.contains(item, amount))
                 return false;

@@ -66,8 +66,8 @@ public class Generator {
         if (this.getItemsInside() >= this.maxAmount)
             return;
 
-        final World world = this.center.getWorld();
-        final List<ItemStack> toGive = this.materials.entrySet()
+        World world = this.center.getWorld();
+        List<ItemStack> toGive = this.materials.entrySet()
                 .stream()
                 .map(entry -> new ItemStack(entry.getKey(), entry.getValue()))
                 .toList();
@@ -76,7 +76,7 @@ public class Generator {
 
         // Share the itemstack with all the players inside the generator if enabled.
         if (shareDrops) {
-            final List<Player> inside = this.getPlayersInside();
+            List<Player> inside = this.getPlayersInside();
             if (inside.size() > 1) {
                 inside.forEach(player -> player.getInventory().addItem(toGive.toArray(ItemStack[]::new)));
                 return;
@@ -111,7 +111,7 @@ public class Generator {
      * @return The amount of materials inside the generator.
      */
     public int getItemsInside() {
-        final World world = this.center.getWorld();
+        World world = this.center.getWorld();
         if (world == null) return 0;
 
         return world.getNearbyEntities(this.center, this.radius, this.radius, this.radius).stream()
@@ -129,7 +129,7 @@ public class Generator {
      * @return The players inside
      */
     public List<Player> getPlayersInside() {
-        final World world = this.center.getWorld();
+        World world = this.center.getWorld();
         if (world == null) return new ArrayList<>();
 
         return world.getNearbyEntities(this.center, this.radius, this.radius, this.radius).stream()
@@ -144,7 +144,7 @@ public class Generator {
      * @param material The material to upgrade
      */
     public void upgrade(Material material) {
-        final int level = this.materials.getOrDefault(material, 0);
+        int level = this.materials.getOrDefault(material, 0);
 
         this.materials.put(material, level + 1);
     }

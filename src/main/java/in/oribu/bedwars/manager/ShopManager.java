@@ -31,7 +31,7 @@ public class ShopManager extends Manager {
         this.shops.clear();
         this.rosePlugin.getLogger().info("Loading all the shops from the /Bedwars/shops folder.");
 
-        final File folder = new File(this.rosePlugin.getDataFolder(), "shops");
+        File folder = new File(this.rosePlugin.getDataFolder(), "shops");
 
         // Create the folder
         if (!folder.exists()) {
@@ -40,7 +40,7 @@ public class ShopManager extends Manager {
         }
 
         // Create the file
-        final File[] files = folder.listFiles();
+        File[] files = folder.listFiles();
         if (files == null || files.length == 0) {
             this.rosePlugin.getLogger().warning("Unable to find any shops in the /Bedwars/shops folder.");
             return;
@@ -58,17 +58,17 @@ public class ShopManager extends Manager {
      * @param file The file
      */
     public void loadShop(File file) {
-        final CommentedFileConfiguration config = CommentedFileConfiguration.loadConfiguration(file);
+        CommentedFileConfiguration config = CommentedFileConfiguration.loadConfiguration(file);
 
-        final String shopName = config.getString("name");
-        final int size = config.getInt("size", 27);
+        String shopName = config.getString("name");
+        int size = config.getInt("size", 27);
         if (shopName == null) {
             this.rosePlugin.getLogger().warning("Unable to find the name of the shop " + file.getName() + ".");
             return;
         }
 
-        final Map<Integer, ShopItem> items = new HashMap<>();
-        final CommentedConfigurationSection itemsSection = config.getConfigurationSection("items");
+        Map<Integer, ShopItem> items = new HashMap<>();
+        CommentedConfigurationSection itemsSection = config.getConfigurationSection("items");
         if (itemsSection == null || itemsSection.getKeys(false).isEmpty()) {
             this.rosePlugin.getLogger().warning("Unable to find any items in the shop " + file.getName() + ".");
             return;
@@ -110,8 +110,8 @@ public class ShopManager extends Manager {
 
             Map<Material, Integer> cost = new HashMap<>();
             for (String costKey : costSection.getKeys(false)) {
-                final Material costMaterial = Material.getMaterial(costKey);
-                final int amount = costSection.getInt(costKey);
+                Material costMaterial = Material.getMaterial(costKey);
+                int amount = costSection.getInt(costKey);
 
                 if (costMaterial == null) {
                     continue;
@@ -120,11 +120,11 @@ public class ShopManager extends Manager {
                 cost.put(costMaterial, amount);
             }
 
-            final ShopItem shopItem = new ShopItem(result, cost);
+            ShopItem shopItem = new ShopItem(result, cost);
             items.put(slot, shopItem);
         }
 
-        final Shop shop = new Shop(shopName, items, size);
+        Shop shop = new Shop(shopName, items, size);
         this.shops.put(shopName, shop);
     }
 

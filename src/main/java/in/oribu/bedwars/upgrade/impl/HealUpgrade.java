@@ -28,7 +28,7 @@ public class HealUpgrade extends Upgrade {
 
         int radius = match.getMap().getIslandRadius();
 
-        final Location center = team.getSpawn();
+        Location center = team.getSpawn();
         if (center.getWorld() != null) {
             center.getWorld().spawnParticle(
                     Particle.VILLAGER_HAPPY,

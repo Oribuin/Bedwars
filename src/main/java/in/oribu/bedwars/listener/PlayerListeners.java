@@ -31,7 +31,7 @@ public class PlayerListeners implements Listener {
 //
 //    @EventHandler
 //    public void onInteract(PlayerInteractEvent event) {
-//        final ItemStack hand = event.getItem();
+//      ItemStack hand = event.getItem();
 //        if (hand == null) return;
 //
 //        if (this.projectileTypes.containsKey(hand.getType())) {
@@ -41,14 +41,14 @@ public class PlayerListeners implements Listener {
 //
 //    @EventHandler
 //    public void onLaunch(ProjectileLaunchEvent event) {
-//        final Projectile projectile = event.getEntity();
-//        final ProjectileSource shooter = projectile.getShooter();
+//      Projectile projectile = event.getEntity();
+//      ProjectileSource shooter = projectile.getShooter();
 //        if (!(projectile instanceof ThrowableProjectile)) return;
 //        if (!(shooter instanceof Player player)) return;
 //        if (!(this.projectileTypes.containsValue(projectile.getType()))) return;
 //
-//        final ItemStack item = this.lastThrown.get(player.getUniqueId());
-//        final EntityType type = this.projectileTypes.get(item.getType());
+//      ItemStack item = this.lastThrown.get(player.getUniqueId());
+//      EntityType type = this.projectileTypes.get(item.getType());
 //
 //        if (projectile.getType() != type) return;
 //

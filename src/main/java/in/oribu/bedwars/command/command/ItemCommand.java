@@ -20,7 +20,7 @@ public class ItemCommand extends RoseCommand {
         if (!(context.getSender() instanceof Player player))
             return;
 
-        final ItemStack itemStack = item.getItem();
+        ItemStack itemStack = item.getItem();
         player.getInventory().addItem(itemStack);
         player.sendMessage("You have been given the item " + item.getName());
     }

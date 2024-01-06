@@ -18,7 +18,7 @@ public class ShopArgumentHandler extends RoseCommandArgumentHandler<Shop> {
 
     @Override
     protected Shop handleInternal(RoseCommandArgumentInfo argumentInfo, ArgumentParser argumentParser) throws HandledArgumentException {
-        final String input = argumentParser.next();
+        String input = argumentParser.next();
 
         Shop shop = this.rosePlugin.getManager(ShopManager.class).getShops().get(input);
         if (shop != null)

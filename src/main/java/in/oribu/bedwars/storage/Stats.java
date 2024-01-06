@@ -20,7 +20,7 @@ public class Stats {
      * @param player The player
      */
     public void add(MatchPlayer player) {
-        final Stats stats = player.getStats();
+        Stats stats = player.getStats();
 
         this.kills += stats.getKills();
         this.deaths += stats.getDeaths();

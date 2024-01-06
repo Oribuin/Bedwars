@@ -31,7 +31,7 @@ public class BridgeEggItem extends CustomItem {
     public void event(ContextHandler handler) {
         if (handler.player() == null) return;
 
-        final ProjectileLaunchEvent event = handler.as(ProjectileLaunchEvent.class);
+        ProjectileLaunchEvent event = handler.as(ProjectileLaunchEvent.class);
         if (event == null) {
             return;
         }
@@ -70,9 +70,9 @@ public class BridgeEggItem extends CustomItem {
      */
     private void createBridge(Location location) {
         // Make the center the block behind the egg
-        final Block center = location.clone().subtract(0, 2, 0).getBlock();
-        final BlockData data = Material.WHITE_WOOL.createBlockData();
-        final List<Block> blocks = List.of(
+        Block center = location.clone().subtract(0, 2, 0).getBlock();
+        BlockData data = Material.WHITE_WOOL.createBlockData();
+        List<Block> blocks = List.of(
                 center.getRelative(1, 0, 0),
                 center.getRelative(-1, 0, 0),
                 center.getRelative(0, 0, 1),

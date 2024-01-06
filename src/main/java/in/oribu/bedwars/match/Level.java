@@ -47,7 +47,7 @@ public class Level {
      */
     public void load() {
         // Load the map schematic into the world.
-        final PluginManager manager = Bukkit.getPluginManager();
+        PluginManager manager = Bukkit.getPluginManager();
         if (manager.isPluginEnabled("FastAsyncWorldEdit") || manager.isPluginEnabled("AsyncWorldEdit")) {
             Bukkit.getScheduler().runTaskAsynchronously(BedwarsPlugin.get(), this::paste);
         } else {
@@ -77,7 +77,7 @@ public class Level {
             throw new IllegalStateException("Unable to read schematic for map: " + this.name);
         }
 
-        final Clipboard finalClipboard = clipboard;
+        Clipboard finalClipboard = clipboard;
         try (final EditSession session = WorldEdit.getInstance().newEditSessionBuilder()
                 .world(BukkitAdapter.adapt(this.center.getWorld()))
                 .maxBlocks(-1)

@@ -35,9 +35,9 @@ public class DataManager extends AbstractDataManager {
             try (PreparedStatement statement = connection.prepareStatement("SELECT * FROM " + this.getTablePrefix() + "global WHERE uuid = ?")) {
                 statement.setString(1, String.valueOf(player.getUniqueId()));
 
-                final ResultSet result = statement.executeQuery();
+                ResultSet result = statement.executeQuery();
                 if (result.next()) {
-                    final Stats stats = new Stats();
+                    Stats stats = new Stats();
                     stats.setKills(result.getInt("kills"));
                     stats.setDeaths(result.getInt("deaths"));
                     stats.setWins(result.getInt("wins"));
@@ -58,13 +58,13 @@ public class DataManager extends AbstractDataManager {
      */
     public void savePlayers(Match match) {
         this.async(() -> this.databaseConnector.connect(connection -> {
-            final String query = "REPLACE INTO " + this.getTablePrefix() + "global (uuid, `name`, kills, deaths, wins, losses, bedsBroken, bedsLost) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+            String query = "REPLACE INTO " + this.getTablePrefix() + "global (uuid, `name`, kills, deaths, wins, losses, bedsBroken, bedsLost) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
 
             try (PreparedStatement statement = connection.prepareStatement(query)) {
 
                 // Save every player within the match.
                 for (final MatchPlayer player : match.getPlayers()) {
-                    final Stats stats = this.userCache.getOrDefault(
+                    Stats stats = this.userCache.getOrDefault(
                             player.getUUID(),
                             new Stats()
                     );

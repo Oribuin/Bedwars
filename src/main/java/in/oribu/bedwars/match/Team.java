@@ -91,7 +91,7 @@ public class Team {
         // TODO: Add check to see if the team can upgrade
         // TODO: Sent message to the team that they have upgraded
 
-        final int newLevel = this.upgrades.getOrDefault(type, 0) + 1;
+        int newLevel = this.upgrades.getOrDefault(type, 0) + 1;
         this.upgrades.put(type, newLevel);
 
         type.getUpgrade().equip(match, this, newLevel);
