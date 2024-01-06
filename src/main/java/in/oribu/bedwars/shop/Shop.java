@@ -1,5 +1,8 @@
 package in.oribu.bedwars.shop;
 
+import dev.triumphteam.gui.guis.Gui;
+import dev.triumphteam.gui.guis.PaginatedGui;
+import net.kyori.adventure.text.Component;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.Map;
@@ -16,6 +19,19 @@ public class Shop {
         this.items = items;
         this.size = size;
         this.title = StringUtils.capitalize(name);
+    }
+
+    /**
+     * Create a PaginatedGui from the shop
+     *
+     * @return The PaginatedGui
+     */
+    public PaginatedGui create() {
+        return Gui.paginated()
+                .title(Component.text(this.title))
+                .rows(this.size / 9)
+                .disableAllInteractions()
+                .create();
     }
 
     public String getName() {
