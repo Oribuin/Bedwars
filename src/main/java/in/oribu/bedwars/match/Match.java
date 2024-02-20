@@ -14,11 +14,13 @@ public class Match {
 
     private final Level level; // The map of the match
     private final Map<String, Team> teams; // The teams in the match
+    private final Set<FinePosition> placedBlocks; // The blocks placed in the match
     private long startTime; // The time the match started
 
     public Match(Level level) {
         this.level = level;
         this.teams = new HashMap<>();
+        this.placedBlocks = new HashSet<>();
         this.startTime = 0;
     }
 
@@ -76,6 +78,16 @@ public class Match {
                 .toList();
     }
 
+    /**
+     * Check if a block has been placed by a player already, If not, the block cannot be broken
+     *
+     * @param block The block
+     * @return True if the block can be broken
+     */
+    public boolean canBeBroken(Block block) {
+        return this.placedBlocks.stream().noneMatch(pos -> pos.matches(block));
+    }
+
     public Level getMap() {
         return level;
     }
@@ -84,6 +96,13 @@ public class Match {
         return this.teams;
     }
 
+    public Set<FinePosition> getPlacedBlocks() {
+        return placedBlocks;
+    }
+
+    public void addPlacedBlock(FinePosition position) {
+        this.placedBlocks.add(position);
+    }
     public long getStartTime() {
         return startTime;
     }
