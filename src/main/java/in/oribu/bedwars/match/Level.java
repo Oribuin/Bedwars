@@ -35,6 +35,7 @@ public class Level {
         this.file = file;
         this.config = CommentedFileConfiguration.loadConfiguration(file);
         this.maxTeams = this.bedPositions.size();
+        this.playersPerTeam = 1;
     }
 
     /**
@@ -47,7 +48,7 @@ public class Level {
     }
 
     /**
-     * Save all the data of the map to the file
+     * Save all the data of the map to the the configuration section
      */
     public void save() {
         this.config.set("name", this.name);
@@ -58,6 +59,8 @@ public class Level {
         this.config.set("center.yaw", this.center.getYaw());
         this.config.set("center.pitch", this.center.getPitch());
         this.config.set("island-radius", this.islandRadius);
+        this.config.set("players-per-team", this.playersPerTeam);
+        this.config.set("max-teams", this.maxTeams);
 
         CommentedConfigurationSection generatorsSection = this.config.getConfigurationSection("generators");
         if (generatorsSection == null) generatorsSection = this.config.createSection("generators");
@@ -72,6 +75,7 @@ public class Level {
             generatorsSection.set(i + ".max-drops", generator.getMaxAmount());
             generatorsSection.set(i + ".share-drops", generator.isShareDrops());
             generatorsSection.set(i + ".cooldown", BedwarsUtil.formatTime(generator.getCooldown()));
+            generatorsSection.set(i + ".hologram-icon", generator.getHologramIcon().name());
 
             for (Map.Entry<Material, Integer> entry : generator.getMaterials().entrySet()) {
                 generatorsSection.set(i + ".materials." + entry.getKey().name(), entry.getValue());
@@ -81,9 +85,27 @@ public class Level {
         }
 
         // Save all the teams to the config file
-        CommentedConfigurationSection teamsSection = this.config.getConfigurationSection("teams");
-        if (teamsSection == null) teamsSection = this.config.createSection("teams");
+        CommentedConfigurationSection teamsSection = this.config.getConfigurationSection("team-settings");
+        if (teamsSection == null) teamsSection = this.config.createSection("team-settings");
 
+        teamsSection.set("max-teams", this.maxTeams);
+        teamsSection.set("players-per-team", this.playersPerTeam);
+
+        for (int i = 0; i < this.maxTeams; i++) {
+            FinePosition bedPosition = this.bedPositions.get(i);
+            if (bedPosition == null) continue;
+
+            // Load the bed positions
+            teamsSection.set(i + ".bed.world", bedPosition.world());
+            teamsSection.set(i + ".bed.x", bedPosition.x());
+            teamsSection.set(i + ".bed.y", bedPosition.y());
+            teamsSection.set(i + ".bed.z", bedPosition.z());
+        }
+
+        this.config.set("team-settings", teamsSection);
+
+        // Save the config to the file
+        this.config.save(this.file);
     }
 
     public @NotNull String getName() {
@@ -98,8 +120,8 @@ public class Level {
         return this.generators;
     }
 
-    public List<FinePosition> getBedPositions() {
-        return bedPositions;
+    public @NotNull List<FinePosition> getBedPositions() {
+        return this.bedPositions;
     }
 
     public int getIslandRadius() {
@@ -108,6 +130,22 @@ public class Level {
 
     public void setIslandRadius(int islandRadius) {
         this.islandRadius = islandRadius;
+    }
+
+    public int getMaxTeams() {
+        return this.maxTeams;
+    }
+
+    public void setMaxTeams(int maxTeams) {
+        this.maxTeams = maxTeams;
+    }
+
+    public int getPlayersPerTeam() {
+        return this.playersPerTeam;
+    }
+
+    public void setPlayersPerTeam(int playersPerTeam) {
+        this.playersPerTeam = playersPerTeam;
     }
 
 }

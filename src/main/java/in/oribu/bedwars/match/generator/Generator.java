@@ -2,20 +2,21 @@ package in.oribu.bedwars.match.generator;
 
 import in.oribu.bedwars.storage.DataKeys;
 import net.kyori.adventure.text.minimessage.MiniMessage;
-import org.bukkit.Color;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
-import org.bukkit.entity.BlockDisplay;
-import org.bukkit.entity.Display;
+import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.EntityEquipment;
+import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -33,7 +34,7 @@ public class Generator {
     private int maxAmount; // The maximum amount of items that can be inside a generator
     private int radius; // The radius of the generator (Default: 3x3)
     private boolean shareDrops; // Should the item drops be shared amongst players.
-    private Material hologramMaterial; // The material to use for the hologram
+    private Material hologramIcon; // The material to use for the hologram
 
     // Entity Settings
     private Entity display; // The display entity for the generator
@@ -47,35 +48,44 @@ public class Generator {
      * @param center    The location of the generator
      * @param cooldown  The cooldown between drops (in millis)
      */
-    public Generator(Map<Material, Integer> materials, Location center, int cooldown) {
+    public Generator(Map<Material, Integer> materials, Location center) {
         this.materials = materials;
         this.center = center;
-        this.cooldown = cooldown;
+        this.cooldown = Duration.ofSeconds(3).toMillis();
         this.lastDrop = 0;
         this.maxAmount = 48;
         this.radius = 3;
         this.shareDrops = false;
+        this.hologramIcon = null;
     }
 
     /**
      * Create all the display functions for the generator (if needed)
      */
     public void create() {
-        if (!this.hologramMaterial.isBlock()) return;
+        if (this.hologramIcon == null || !this.hologramIcon.isBlock()) return;
 
-        Location displayLocation = this.center.clone().add(0, 3, 0);
-        this.display = this.center.getWorld().spawn(displayLocation, BlockDisplay.class, display -> {
-            display.setBlock(this.hologramMaterial.createBlockData());
-            display.setInvulnerable(true);
-            display.setBillboard(Display.Billboard.FIXED);
+        this.step = 0;
+        this.heightOffset = 1.5;
 
-            PersistentDataContainer container = display.getPersistentDataContainer();
+        Location displayLocation = this.center.toCenterLocation().add(0, 1.5, 0);
+
+        this.display = center.getWorld().spawn(displayLocation, ArmorStand.class, x -> {
+            x.setInvisible(true);
+            x.setInvulnerable(true);
+            x.setGravity(false);
+
+            for (EquipmentSlot slot : EquipmentSlot.values())
+                x.addEquipmentLock(slot, ArmorStand.LockType.ADDING_OR_CHANGING);
+
+            EntityEquipment equipment = x.getEquipment();
+            equipment.setHelmet(new ItemStack(this.hologramIcon), true);
+
+            x.customName(MiniMessage.miniMessage().deserialize("<gradient:red:blue>Generator</gradient>"));
+            x.setCustomNameVisible(true);
+
+            PersistentDataContainer container = x.getPersistentDataContainer();
             container.set(DataKeys.GENERATOR_DISPLAY, PersistentDataType.INTEGER, 1);
-
-            display.setGlowColorOverride(Color.AQUA);
-            display.setGlowing(true);
-            display.setCustomNameVisible(true);
-            display.customName(MiniMessage.miniMessage().deserialize("<gradient:red:blue>Generator</gradient>"));
         });
     }
 
@@ -102,12 +112,13 @@ public class Generator {
      * Called when the generator is ticked
      */
     public void tick() {
-        if (this.display != null) {
+        if (this.display != null && this.hologramIcon != null) {
             this.step++;
 
-            Location direction = this.display.getLocation().clone();
-            direction.setYaw((float) (this.step * 100));
-            direction.setY(center.getY() - this.heightOffset + Math.sin(step) * 0.2 + this.heightOffset);
+            double theta = this.step * 0.05;
+            Location direction = this.center.toCenterLocation().add(0, 1.5, 0);
+            direction.setYaw((float) (theta * 100));
+            direction.setY(center.getY() - this.heightOffset + Math.sin(theta) * 0.2 + this.heightOffset);
             this.display.teleport(direction);
         }
 
@@ -240,6 +251,14 @@ public class Generator {
 
     public void setShareDrops(boolean shareDrops) {
         this.shareDrops = shareDrops;
+    }
+
+    public Material getHologramIcon() {
+        return this.hologramIcon;
+    }
+
+    public void setHologramIcon(Material hologramMaterial) {
+        this.hologramIcon = hologramMaterial;
     }
 
 }

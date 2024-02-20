@@ -189,6 +189,9 @@ public final class BedwarsUtil {
     }
 
     public static long getTimeFromString(String time) {
+        if (time == null || time.isEmpty())
+            return 0;
+
         String[] split = time.split(" ");
         long total = 0;
 

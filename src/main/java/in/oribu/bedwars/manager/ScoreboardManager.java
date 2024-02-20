@@ -5,6 +5,7 @@ import dev.rosewood.rosegarden.hook.PlaceholderAPIHook;
 import dev.rosewood.rosegarden.manager.Manager;
 import dev.rosewood.rosegarden.utils.HexUtils;
 import in.oribu.bedwars.manager.ConfigurationManager.Setting;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.event.Listener;
@@ -26,7 +27,6 @@ public class ScoreboardManager extends Manager implements Listener {
         super(rosePlugin);
 
         org.bukkit.scoreboard.ScoreboardManager manager = Bukkit.getScoreboardManager();
-        if (manager == null) return;
 
         this.scoreboard = manager.getNewScoreboard();
         this.objective = scoreboard.registerNewObjective("bedwars", Criteria.DUMMY, HexUtils.colorify("<r:0.7>Oribuin Bedwars"));

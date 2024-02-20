@@ -19,7 +19,6 @@ public class Team {
 
     private final @NotNull String name;
     private final @NotNull Location spawn;
-    private final @NotNull Location bed;
     private final @NotNull ChatColor teamColor;
     private @NotNull Generator generator;
     private @NotNull Map<UUID, MatchPlayer> players;
@@ -40,7 +39,6 @@ public class Team {
     public Team(@NotNull String name, @NotNull Location spawn, @NotNull Generator generator, @NotNull ChatColor teamColor) {
         this.name = name;
         this.spawn = spawn;
-        this.bed = spawn;
         this.generator = generator;
         this.teamColor = teamColor;
         this.players = new HashMap<>();
