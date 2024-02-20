@@ -1,36 +1,33 @@
 package in.oribu.bedwars.command.argument;
 
-import dev.rosewood.rosegarden.RosePlugin;
-import dev.rosewood.rosegarden.command.framework.ArgumentParser;
-import dev.rosewood.rosegarden.command.framework.RoseCommandArgumentHandler;
-import dev.rosewood.rosegarden.command.framework.RoseCommandArgumentInfo;
+import dev.rosewood.rosegarden.command.framework.Argument;
+import dev.rosewood.rosegarden.command.framework.ArgumentHandler;
+import dev.rosewood.rosegarden.command.framework.CommandContext;
+import dev.rosewood.rosegarden.command.framework.InputIterator;
 import dev.rosewood.rosegarden.utils.StringPlaceholders;
 import in.oribu.bedwars.item.CustomItem;
 import in.oribu.bedwars.item.ItemRegistry;
 
 import java.util.List;
 
-public class CustomItemArgumentHandler extends RoseCommandArgumentHandler<CustomItem> {
+public class CustomItemArgumentHandler extends ArgumentHandler<CustomItem> {
 
-    public CustomItemArgumentHandler(RosePlugin rosePlugin) {
-        super(rosePlugin, CustomItem.class);
+    public CustomItemArgumentHandler() {
+        super(CustomItem.class);
     }
 
     @Override
-    protected CustomItem handleInternal(RoseCommandArgumentInfo argumentInfo, ArgumentParser argumentParser) throws HandledArgumentException {
-        String input = argumentParser.next();
+    public CustomItem handle(CommandContext context, Argument argument, InputIterator inputIterator) throws HandledArgumentException {
+        String input = inputIterator.next();
+        CustomItem customItem = ItemRegistry.get(input.toLowerCase());
+        if (customItem == null)
+            throw new HandledArgumentException("command-item-invalid-item", StringPlaceholders.of("input", input));
 
-        CustomItem customItem = ItemRegistry.get(input);
-        if (customItem != null)
-            return customItem;
-
-        throw new HandledArgumentException("command-item-invalid-item", StringPlaceholders.of("input", input));
+        return customItem;
     }
 
     @Override
-    protected List<String> suggestInternal(RoseCommandArgumentInfo argumentInfo, ArgumentParser argumentParser) {
-        argumentParser.next();
-
+    public List<String> suggest(CommandContext context, Argument argument, String[] args) {
         return ItemRegistry.getItems().keySet().stream().toList();
     }
 

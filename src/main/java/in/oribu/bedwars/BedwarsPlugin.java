@@ -8,6 +8,7 @@ import in.oribu.bedwars.listener.PlayerListeners;
 import in.oribu.bedwars.manager.CommandManager;
 import in.oribu.bedwars.manager.ConfigurationManager;
 import in.oribu.bedwars.manager.DataManager;
+import in.oribu.bedwars.manager.GameManager;
 import in.oribu.bedwars.manager.LocaleManager;
 import in.oribu.bedwars.manager.ScoreboardManager;
 import in.oribu.bedwars.manager.ShopManager;
@@ -53,7 +54,7 @@ public class BedwarsPlugin extends RosePlugin {
 
     @Override
     public List<Class<? extends Manager>> getManagerLoadPriority() {
-        return List.of(ScoreboardManager.class, ShopManager.class);
+        return List.of(ScoreboardManager.class, ShopManager.class, GameManager.class);
     }
 
 }

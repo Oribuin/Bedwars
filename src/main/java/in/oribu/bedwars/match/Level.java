@@ -20,8 +20,8 @@ public class Level {
     private final @NotNull Location center; // The center of the map
     private final @NotNull List<Generator> generators; // The generators in the map
     private final @NotNull List<FinePosition> bedPositions; // The positions of the beds
-    private CommentedFileConfiguration config; // The configuration of the map
-    private File file; // The file of the map
+    private final CommentedFileConfiguration config; // The configuration of the map
+    private final File file; // The file of the map
     private int islandRadius; // The radius of the island
     private int maxTeams; // The maximum amount of teams
     private int playersPerTeam; // The maximum amount of players per team
@@ -68,6 +68,8 @@ public class Level {
         // Save all the generators to the config file
         for (int i = 0; i < this.generators.size(); i++) {
             Generator generator = this.generators.get(i);
+            if (generator == null) continue;
+
             generatorsSection.set(i + ".center.x", generator.getCenter().getX());
             generatorsSection.set(i + ".center.y", generator.getCenter().getY());
             generatorsSection.set(i + ".center.z", generator.getCenter().getZ());

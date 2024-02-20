@@ -1,11 +1,12 @@
 package in.oribu.bedwars.manager;
 
 import dev.rosewood.rosegarden.RosePlugin;
-import dev.rosewood.rosegarden.command.framework.RoseCommandWrapper;
+import dev.rosewood.rosegarden.command.framework.BaseRoseCommand;
 import dev.rosewood.rosegarden.manager.AbstractCommandManager;
-import in.oribu.bedwars.command.BedwarsCommandWrapper;
+import in.oribu.bedwars.command.BaseCommand;
 
 import java.util.List;
+import java.util.function.Function;
 
 public class CommandManager extends AbstractCommandManager {
 
@@ -14,13 +15,10 @@ public class CommandManager extends AbstractCommandManager {
     }
 
     @Override
-    public List<Class<? extends RoseCommandWrapper>> getRootCommands() {
-        return List.of(BedwarsCommandWrapper.class);
-    }
-
-    @Override
-    public List<String> getArgumentHandlerPackages() {
-        return List.of("in.oribu.bedwars.command.argument");
+    public List<Function<RosePlugin, BaseRoseCommand>> getRootCommands() {
+        return List.of(
+                BaseCommand::new
+        );
     }
 
 }

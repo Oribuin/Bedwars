@@ -32,14 +32,14 @@ repositories {
 }
 
 dependencies {
-    api("dev.rosewood:rosegarden:1.2.5")
+    api("dev.rosewood:rosegarden:1.3.0.22-DEV-SNAPSHOT")
     api("dev.triumphteam:triumph-gui:3.1.7") {
         exclude(group = "com.google.code.gson", module = "gson")
         exclude(group = "net.kyori", module = "*")
     }
 
     compileOnly("org.jetbrains:annotations:24.0.0")
-    compileOnly("io.papermc.paper:paper-api:1.20.2-R0.1-SNAPSHOT")
+    compileOnly("io.papermc.paper:paper-api:1.20.4-R0.1-SNAPSHOT")
 //    compileOnly("org.spigotmc:spigot-api:1.20.2-R0.1-SNAPSHOT")
 
     // Plugin Dependencies

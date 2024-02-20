@@ -19,6 +19,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
 import java.time.Duration;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -36,7 +37,31 @@ public class GameManager extends Manager {
 
     @Override
     public void reload() {
+        this.levels.clear();
+        this.rosePlugin.getLogger().info("Loading all levels from the Bedwars/levels folder.");
 
+        // Create the folder
+        File folder = new File(this.rosePlugin.getDataFolder(), "levels");
+        if (!folder.exists()) {
+            folder.mkdirs();
+        }
+
+
+        // Create the file
+        File[] files = folder.listFiles();
+        if (files == null || files.length == 0) {
+            this.rosePlugin.getLogger().info("No levels found in the Bedwars/levels folder.");
+            return;
+        }
+
+        Arrays.stream(files)
+                .filter(file -> file.getName().endsWith(".yml"))
+                .forEach(file -> {
+                    Level level = this.loadLevel(file);
+                    if (level != null) {
+                        this.levels.put(level.getName(), level);
+                    }
+                });
     }
 
     /**
@@ -71,6 +96,15 @@ public class GameManager extends Manager {
     @Nullable
     public Match getActiveMatch() {
         return this.activeMatch;
+    }
+
+    /**
+     * Cache a level into the manager
+     *
+     * @param level The level to cache
+     */
+    public void cache(Level level) {
+        this.levels.put(level.getName().toLowerCase(), level);
     }
 
     /**
