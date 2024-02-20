@@ -23,6 +23,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 public class Level {
 
@@ -45,17 +46,19 @@ public class Level {
     /**
      * Load the map into the world
      */
-    public void load() {
-        // Load the map schematic into the world.
-        PluginManager manager = Bukkit.getPluginManager();
-        if (manager.isPluginEnabled("FastAsyncWorldEdit") || manager.isPluginEnabled("AsyncWorldEdit")) {
-            Bukkit.getScheduler().runTaskAsynchronously(BedwarsPlugin.get(), this::paste);
-        } else {
-            this.paste();
-        }
+    public CompletableFuture<Void> load() {
+        return CompletableFuture.runAsync(() -> {
+            // Load the map schematic into the world.
+            PluginManager manager = Bukkit.getPluginManager();
+            if (manager.isPluginEnabled("FastAsyncWorldEdit") || manager.isPluginEnabled("AsyncWorldEdit")) {
+                this.paste();
+            } else {
+                Bukkit.getScheduler().runTask(BedwarsPlugin.get(), this::paste);
+            }
 
-        // Create the island generators in their designated locations.
-        this.generators.forEach(Generator::create);
+            // Create the island generators in their designated locations.
+            this.generators.forEach(Generator::create);
+        });
     }
 
     /**

@@ -2,8 +2,10 @@ package in.oribu.bedwars.match;
 
 import in.oribu.bedwars.match.generator.Generator;
 import in.oribu.bedwars.upgrade.UpgradeType;
+import in.oribu.bedwars.util.BedwarsUtil;
+import net.kyori.adventure.text.Component;
+import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
@@ -75,6 +77,8 @@ public class Team {
         this.players.put(player.getUniqueId(), new MatchPlayer(player, this.name));
 
         // Add the player to the scoreboard team
+        if (this.scoreboardTeam == null) return;
+
         if (this.scoreboardTeam.hasEntry(player.getName())) {
             this.scoreboardTeam.addEntry(player.getName());
         }
@@ -121,8 +125,8 @@ public class Team {
         if (this.scoreboardTeam == null) {
             scoreboardTeam.setAllowFriendlyFire(false);
             scoreboardTeam.setCanSeeFriendlyInvisibles(true);
-            scoreboardTeam.setColor(this.teamColor);
-            scoreboardTeam.setDisplayName(this.name);
+            scoreboardTeam.color(BedwarsUtil.getNamedTextColor(this.teamColor));
+            scoreboardTeam.displayName(Component.text(this.name));
             scoreboardTeam.setOption(
                     org.bukkit.scoreboard.Team.Option.COLLISION_RULE,
                     org.bukkit.scoreboard.Team.OptionStatus.NEVER

@@ -51,6 +51,26 @@ public class Generator {
     public void create() {
         // TODO: Create a hologram with timers
         // TODO: Create spinny cube :)
+        // TODO: Entity creation has to be done synchronously
+    }
+
+    /**
+     * Drop an item from the generator
+     *
+     * @param itemStack The item to drop
+     */
+    public void dropItem(ItemStack itemStack) {
+        World world = this.center.getWorld();
+        if (world == null) return;
+
+        world.dropItem(this.center.clone(), itemStack.clone(), item -> {
+            item.setUnlimitedLifetime(true);
+            item.getPersistentDataContainer().set(
+                    DataKeys.GENERATOR_ITEM,
+                    PersistentDataType.INTEGER,
+                    1
+            );
+        });
     }
 
     /**
@@ -84,16 +104,7 @@ public class Generator {
         }
 
         // Create the item on the ground.
-        for (ItemStack itemStack : toGive) {
-            world.dropItem(this.center.clone(), itemStack.clone(), item -> {
-                item.setUnlimitedLifetime(true);
-                item.getPersistentDataContainer().set(
-                        DataKeys.GENERATOR_ITEM,
-                        PersistentDataType.INTEGER,
-                        1
-                );
-            });
-        }
+        toGive.forEach(this::dropItem);
     }
 
     /**

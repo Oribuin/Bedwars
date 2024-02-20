@@ -2,29 +2,45 @@ package in.oribu.bedwars.match;
 
 import in.oribu.bedwars.BedwarsPlugin;
 import in.oribu.bedwars.match.generator.Generator;
+import in.oribu.bedwars.storage.FinePosition;
 import org.bukkit.Bukkit;
+import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public class Match {
 
     private final Level level; // The map of the match
     private final Map<String, Team> teams; // The teams in the match
     private final Set<FinePosition> placedBlocks; // The blocks placed in the match
+    private MatchStatus status; // The status of the match
     private long startTime; // The time the match started
 
     public Match(Level level) {
         this.level = level;
         this.teams = new HashMap<>();
         this.placedBlocks = new HashSet<>();
+        this.status = MatchStatus.WAITING;
         this.startTime = 0;
     }
 
+    /**
+     * Add a team to the match
+     *
+     * @param player The player to add
+     */
     public void join(Player player) {
+        if (this.status != MatchStatus.WAITING) {
+            player.sendMessage("The match has already started!");
+            return;
+        }
+
         // Get the team with the least players
         Team team = this.teams.values().stream()
                 .filter(t -> t.getPlayers().size() < t.getMaxPlayers())
@@ -41,18 +57,12 @@ public class Match {
     }
 
     /**
-     * Load the match (called when it's decided to create a match)
-     */
-    public void load() {
-        this.level.load();
-    }
-
-    /**
      * Start the match timer (called when the match starts)
      */
     public void start() {
         // Set the start time
         this.startTime = System.currentTimeMillis();
+        this.status = MatchStatus.RUNNING;
 
         Bukkit.getScheduler().runTaskTimer(BedwarsPlugin.get(), this::tick, 0, 1);
     }
@@ -61,7 +71,6 @@ public class Match {
      * Tick the match (called every tick)
      */
     public void tick() {
-        // Tick the generators
         this.level.getGenerators().forEach(Generator::tick);
         this.teams.values().forEach(team -> team.tick(this));
     }
@@ -103,6 +112,15 @@ public class Match {
     public void addPlacedBlock(FinePosition position) {
         this.placedBlocks.add(position);
     }
+
+    public MatchStatus getStatus() {
+        return status;
+    }
+
+    public void setStatus(MatchStatus status) {
+        this.status = status;
+    }
+
     public long getStartTime() {
         return startTime;
     }

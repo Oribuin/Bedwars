@@ -12,60 +12,32 @@ import java.nio.file.Paths;
 public final class FileUtils {
 
     /**
-     * Create a file from the plugin's resources
-     *
-     * @param rosePlugin The plugin
-     * @param fileName   The file name
-     * @return The file
-     */
-    @NotNull
-    public static File createFile(@NotNull RosePlugin rosePlugin, @NotNull String fileName) {
-        File file = new File(rosePlugin.getDataFolder(), fileName); // Create the file
-
-        if (file.exists())
-            return file;
-
-        try (InputStream inStream = rosePlugin.getResource(fileName)) {
-            if (inStream == null) {
-                file.createNewFile();
-                return file;
-            }
-
-            Files.copy(inStream, Paths.get(file.getAbsolutePath()));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        return file;
-    }
-
-    /**
      * Create a file in a folder from the plugin's resources
      *
      * @param rosePlugin The plugin
-     * @param folderName The folder name
-     * @param fileName   The file name
+     * @param folders    The folders
      * @return The file
      */
     @NotNull
-    public static File createFile(@NotNull RosePlugin rosePlugin, @NotNull String folderName, @NotNull String fileName) {
-        File folder = new File(rosePlugin.getDataFolder(), folderName); // Create the folder
-        File file = new File(folder, fileName); // Create the file
-        if (!folder.exists())
-            folder.mkdirs();
-
+    @SuppressWarnings({"ResultOfMethodCallIgnored", "UnusedReturnValue"})
+    public static File createFile(@NotNull RosePlugin rosePlugin, @NotNull String... folders) {
+        File file = new File(rosePlugin.getDataFolder(), String.join("/", folders)); // Create the file
         if (file.exists())
             return file;
 
-        try (InputStream stream = rosePlugin.getResource(folderName + "/" + fileName)) {
+        if (!file.getParentFile().exists()) {
+            file.getParentFile().mkdirs();
+        }
+
+        String path = String.join("/", folders);
+        try (InputStream stream = rosePlugin.getResource(path)) {
             if (stream == null) {
                 file.createNewFile();
                 return file;
             }
 
             Files.copy(stream, Paths.get(file.getAbsolutePath()));
-        } catch (IOException e) {
-            e.printStackTrace();
+        } catch (IOException ignored) {
         }
 
         return file;

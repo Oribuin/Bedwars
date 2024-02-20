@@ -4,10 +4,12 @@ import dev.rosewood.rosegarden.config.CommentedConfigurationSection;
 import dev.rosewood.rosegarden.utils.StringPlaceholders;
 import in.oribu.bedwars.BedwarsPlugin;
 import in.oribu.bedwars.manager.LocaleManager;
+import net.kyori.adventure.text.format.NamedTextColor;
+import net.md_5.bungee.api.ChatColor;
+import org.bukkit.DyeColor;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.command.CommandSender;
-import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
@@ -97,6 +99,60 @@ public final class BedwarsUtil {
     @Nullable
     public static ItemStack deserialize(@NotNull CommentedConfigurationSection section, @Nullable CommandSender sender, @NotNull String key) {
         return deserialize(section, sender, key, StringPlaceholders.empty());
+    }
+
+    /**
+     * Convert a ChatColor to a DyeColor if possible
+     *
+     * @param color The ChatColor to convert
+     * @return The DyeColor
+     */
+    @SuppressWarnings("deprecation")
+    public static DyeColor getDyeColor(ChatColor color) {
+        return switch (color.getName().toLowerCase()) {
+            case "black" -> DyeColor.BLACK;
+            case "dark_blue", "blue" -> DyeColor.BLUE;
+            case "dark_green" -> DyeColor.GREEN;
+            case "dark_aqua" -> DyeColor.CYAN;
+            case "dark_red", "red" -> DyeColor.RED;
+            case "dark_purple" -> DyeColor.PURPLE;
+            case "gold" -> DyeColor.ORANGE;
+            case "gray" -> DyeColor.GRAY;
+            case "dark_gray" -> DyeColor.LIGHT_GRAY;
+            case "green" -> DyeColor.LIME;
+            case "aqua" -> DyeColor.LIGHT_BLUE;
+            case "light_purple" -> DyeColor.MAGENTA;
+            case "yellow" -> DyeColor.YELLOW;
+            default -> DyeColor.WHITE;
+        };
+    }
+
+    /**
+     * Convert a ChatColor to a NamedTextColor if possible
+     *
+     * @param color The ChatColor to convert
+     * @return The NamedTextColor
+     */
+    @SuppressWarnings("deprecation")
+    public static NamedTextColor getNamedTextColor(ChatColor color) {
+        return switch (color.getName().toLowerCase()) {
+            case "black" -> NamedTextColor.BLACK;
+            case "dark_blue" -> NamedTextColor.DARK_BLUE;
+            case "blue" -> NamedTextColor.BLUE;
+            case "dark_green" -> NamedTextColor.DARK_GREEN;
+            case "dark_aqua" -> NamedTextColor.DARK_AQUA;
+            case "dark_red" -> NamedTextColor.DARK_RED;
+            case "dark_purple" -> NamedTextColor.DARK_PURPLE;
+            case "dark_gray" -> NamedTextColor.DARK_GRAY;
+            case "red" -> NamedTextColor.RED;
+            case "gold" -> NamedTextColor.GOLD;
+            case "gray" -> NamedTextColor.GRAY;
+            case "green" -> NamedTextColor.GREEN;
+            case "aqua" -> NamedTextColor.AQUA;
+            case "yellow" -> NamedTextColor.YELLOW;
+            case "light_purple" -> NamedTextColor.LIGHT_PURPLE;
+            default -> NamedTextColor.WHITE;
+        };
     }
 
 }

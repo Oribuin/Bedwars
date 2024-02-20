@@ -14,13 +14,6 @@ public class PlayerListeners implements Listener {
         this.manager = plugin.getManager(ScoreboardManager.class);
     }
 
-    @EventHandler
-    public void onJoin(PlayerJoinEvent event) {
-        if (this.manager.getScoreboard() == null) return;
-
-        event.getPlayer().setScoreboard(this.manager.getScoreboard());
-    }
-
 //    private final Map<UUID, ItemStack> lastThrown = new HashMap<>();
 //    private final Map<Material, EntityType> projectileTypes = Map.of(
 //            Material.EGG, EntityType.EGG,

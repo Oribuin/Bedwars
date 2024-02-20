@@ -1,8 +1,12 @@
 package in.oribu.bedwars.match;
 
+import dev.rosewood.rosegarden.utils.NMSUtil;
+import in.oribu.bedwars.BedwarsPlugin;
+import in.oribu.bedwars.match.generator.Generator;
 import in.oribu.bedwars.storage.Stats;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
@@ -55,7 +59,17 @@ public class MatchPlayer {
 
         // TODO: Check how many members of the team are alive
         // TODO: Play elimination sound, message and finisher
-        // TODO: Drop ender chest contents into team generator.
+
+        // Check if all players are dead in the team
+        // TODO: Eliminate the team if all players are dead
+        if (match.getPlayers().stream().allMatch(MatchPlayer::isDead)) {
+            Bukkit.getLogger().info("All players are dead in team " + this.team);
+        }
+
+        // TODO: End the match if all teams are eliminated
+        if (match.getTeams().values().stream().filter(team -> team.getAlive() > 0).count() <= 1) {
+            Bukkit.getLogger().info("Match is over");
+        }
 
         Player player = this.getPlayer();
 
@@ -64,13 +78,36 @@ public class MatchPlayer {
         player.setAllowFlight(true);
         player.getInventory().clear();
         player.setInvisible(true);
-//        if (NMSUtil.isPaper()) {
-//            player.teleportAsync(match.getMap().getCenter());
-//        } else {
-        player.teleport(match.getMap().getCenter());
-//        }
+        if (NMSUtil.isPaper()) {
+            player.teleportAsync(match.getMap().getCenter());
+        } else {
+            player.teleport(match.getMap().getCenter());
+        }
 
-        // TODO: Hide the player from other players
+        // Hide the player from all other players
+        for (MatchPlayer matchPl : match.getPlayers()) {
+            if (!matchPl.isDead()) continue;
+            if (matchPl.uuid.equals(this.uuid)) continue;
+
+            Player other = matchPl.getPlayer();
+            other.hidePlayer(BedwarsPlugin.get(), player);
+        }
+
+        // Drop the ender chest contents into the team's generator
+        Team team = this.getTeam(match);
+        if (team != null) {
+            Generator generator = team.getGenerator();
+            player.getEnderChest().forEach(itemStack -> {
+                if (itemStack == null || itemStack.getType() == Material.AIR)
+                    return;
+
+                generator.dropItem(itemStack);
+            });
+
+            player.getEnderChest().clear();
+        }
+
+
     }
 
     /**
