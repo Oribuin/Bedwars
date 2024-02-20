@@ -1,101 +1,89 @@
 package in.oribu.bedwars.match;
 
-import com.sk89q.worldedit.EditSession;
-import com.sk89q.worldedit.WorldEdit;
-import com.sk89q.worldedit.WorldEditException;
-import com.sk89q.worldedit.bukkit.BukkitAdapter;
-import com.sk89q.worldedit.extent.clipboard.Clipboard;
-import com.sk89q.worldedit.extent.clipboard.io.ClipboardFormat;
-import com.sk89q.worldedit.extent.clipboard.io.ClipboardFormats;
-import com.sk89q.worldedit.extent.clipboard.io.ClipboardReader;
-import com.sk89q.worldedit.function.operation.Operations;
-import com.sk89q.worldedit.session.ClipboardHolder;
-import in.oribu.bedwars.BedwarsPlugin;
+import dev.rosewood.rosegarden.config.CommentedConfigurationSection;
+import dev.rosewood.rosegarden.config.CommentedFileConfiguration;
 import in.oribu.bedwars.match.generator.Generator;
-import org.bukkit.Bukkit;
+import in.oribu.bedwars.storage.FinePosition;
+import in.oribu.bedwars.util.BedwarsUtil;
 import org.bukkit.Location;
-import org.bukkit.plugin.PluginManager;
+import org.bukkit.Material;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.CompletableFuture;
+import java.util.Map;
 
 public class Level {
 
     private final @NotNull String name; // The name of the map
     private final @NotNull Location center; // The center of the map
     private final @NotNull List<Generator> generators; // The generators in the map
-    private final @NotNull File file; // The file of the map
-    private final @Nullable ClipboardFormat format; // The clipboard format.
+    private final @NotNull List<FinePosition> bedPositions; // The positions of the beds
+    private CommentedFileConfiguration config; // The configuration of the map
+    private File file; // The file of the map
     private int islandRadius; // The radius of the island
+    private int maxTeams; // The maximum amount of teams
+    private int playersPerTeam; // The maximum amount of players per team
 
-    public Level(@NotNull String name, @NotNull Location center, @NotNull String fileName) {
+    public Level(@NotNull String name, @NotNull Location center, @NotNull File file) {
         this.name = name;
         this.center = center;
         this.generators = new ArrayList<>();
-        this.file = new File(BedwarsPlugin.get().getDataFolder(), "schematics/" + fileName);
-        this.format = ClipboardFormats.findByFile(this.file);
+        this.bedPositions = new ArrayList<>();
         this.islandRadius = 25;
+        this.file = file;
+        this.config = CommentedFileConfiguration.loadConfiguration(file);
+        this.maxTeams = this.bedPositions.size();
     }
 
     /**
      * Load the map into the world
      */
-    public CompletableFuture<Void> load() {
-        return CompletableFuture.runAsync(() -> {
-            // Load the map schematic into the world.
-            PluginManager manager = Bukkit.getPluginManager();
-            if (manager.isPluginEnabled("FastAsyncWorldEdit") || manager.isPluginEnabled("AsyncWorldEdit")) {
-                this.paste();
-            } else {
-                Bukkit.getScheduler().runTask(BedwarsPlugin.get(), this::paste);
-            }
+    public void load() {
+        this.generators.forEach(Generator::create);
 
-            // Create the island generators in their designated locations.
-            this.generators.forEach(Generator::create);
-        });
+        // TODO: Place the beds and other items
     }
 
     /**
-     * Paste the map schematic into the world
+     * Save all the data of the map to the file
      */
-    private void paste() {
-        if (this.format == null || center.getWorld() == null) {
-            throw new IllegalStateException("Invalid schematic provided for map: " + this.name);
+    public void save() {
+        this.config.set("name", this.name);
+        this.config.set("world", this.center.getWorld().getName());
+        this.config.set("center.x", this.center.getX());
+        this.config.set("center.y", this.center.getY());
+        this.config.set("center.z", this.center.getZ());
+        this.config.set("center.yaw", this.center.getYaw());
+        this.config.set("center.pitch", this.center.getPitch());
+        this.config.set("island-radius", this.islandRadius);
+
+        CommentedConfigurationSection generatorsSection = this.config.getConfigurationSection("generators");
+        if (generatorsSection == null) generatorsSection = this.config.createSection("generators");
+
+        // Save all the generators to the config file
+        for (int i = 0; i < this.generators.size(); i++) {
+            Generator generator = this.generators.get(i);
+            generatorsSection.set(i + ".center.x", generator.getCenter().getX());
+            generatorsSection.set(i + ".center.y", generator.getCenter().getY());
+            generatorsSection.set(i + ".center.z", generator.getCenter().getZ());
+            generatorsSection.set(i + ".radius", generator.getRadius());
+            generatorsSection.set(i + ".max-drops", generator.getMaxAmount());
+            generatorsSection.set(i + ".share-drops", generator.isShareDrops());
+            generatorsSection.set(i + ".cooldown", BedwarsUtil.formatTime(generator.getCooldown()));
+
+            for (Map.Entry<Material, Integer> entry : generator.getMaterials().entrySet()) {
+                generatorsSection.set(i + ".materials." + entry.getKey().name(), entry.getValue());
+            }
+
+            this.config.set("generators", generatorsSection);
         }
 
-        // Create the clipboard schematic
-        Clipboard clipboard = null;
-        try (FileInputStream stream = new FileInputStream(this.file); ClipboardReader reader = this.format.getReader(stream)) {
-            clipboard = reader.read();
-        } catch (IOException ignored) {
-        }
+        // Save all the teams to the config file
+        CommentedConfigurationSection teamsSection = this.config.getConfigurationSection("teams");
+        if (teamsSection == null) teamsSection = this.config.createSection("teams");
 
-        if (clipboard == null) {
-            throw new IllegalStateException("Unable to read schematic for map: " + this.name);
-        }
-
-        Clipboard finalClipboard = clipboard;
-        try (EditSession session = WorldEdit.getInstance().newEditSessionBuilder()
-                .world(BukkitAdapter.adapt(this.center.getWorld()))
-                .maxBlocks(-1)
-                .build()
-        ) {
-            Operations.complete(new ClipboardHolder(finalClipboard).createPaste(session)
-                    .to(BukkitAdapter.asBlockVector(this.center))
-                    .copyEntities(false)
-                    .copyBiomes(false)
-                    .ignoreAirBlocks(true)
-                    .build()
-            );
-        } catch (WorldEditException e) {
-            throw new RuntimeException(e);
-        }
     }
 
     public @NotNull String getName() {
@@ -108,6 +96,10 @@ public class Level {
 
     public @NotNull List<Generator> getGenerators() {
         return this.generators;
+    }
+
+    public List<FinePosition> getBedPositions() {
+        return bedPositions;
     }
 
     public int getIslandRadius() {

@@ -10,7 +10,14 @@ import org.bukkit.Bukkit;
 import org.bukkit.scheduler.BukkitTask;
 import org.jetbrains.annotations.Nullable;
 
+import java.io.File;
+import java.util.HashMap;
+import java.util.Map;
+
 public class GameManager extends Manager {
+
+    private Map<String, Level> levels = new HashMap<>(); // The levels that are loaded
+    private File levelFolder; // The folder where the levels are stored
 
     private @Nullable Match activeMatch;
     private BukkitTask countdownTask; // The task that makes sure theres enough players to start the match
@@ -36,13 +43,13 @@ public class GameManager extends Manager {
         }
 
         // Wait for the level to load before creating the match and setting it as the active match
-        level.load().thenAccept(unused -> {
-            this.activeMatch = new Match(level);
-            this.activeMatch.setStatus(MatchStatus.WAITING);
+        level.load();
 
-            // Tell all the players that they can join the match when its ready
-            Bukkit.getOnlinePlayers().forEach(player -> player.sendMessage(Component.text("A new match has been created! Type /bw join to join the match!")));
-        });
+        this.activeMatch = new Match(level);
+        this.activeMatch.setStatus(MatchStatus.WAITING);
+
+        // Tell all the players that they can join the match when its ready
+        Bukkit.getOnlinePlayers().forEach(player -> player.sendMessage(Component.text("A new match has been created! Type /bw join to join the match!")));
     }
 
     @Override

@@ -155,4 +155,103 @@ public final class BedwarsUtil {
         };
     }
 
+    /**
+     * Format a time in milliseconds into a string
+     *
+     * @param time Time in milliseconds
+     * @return Formatted time
+     */
+    public static String formatTime(long time) {
+        long totalSeconds = time / 1000;
+
+        if (totalSeconds <= 0)
+            return "";
+
+        long days = (int) Math.floor(totalSeconds / 86400.0);
+        totalSeconds %= 86400;
+
+        long hours = (int) Math.floor(totalSeconds / 3600.0);
+        totalSeconds %= 3600;
+
+        long minutes = (int) Math.floor(totalSeconds / 60.0);
+        long seconds = (totalSeconds % 60);
+
+        final StringBuilder builder = new StringBuilder();
+
+        if (days > 0)
+            builder.append(days).append("d, ");
+
+        builder.append(hours).append("h, ");
+        builder.append(minutes).append("m, ");
+        builder.append(seconds).append("s");
+
+        return builder.toString();
+    }
+
+    public static long getTimeFromString(String time) {
+        String[] split = time.split(" ");
+        long total = 0;
+
+        try {
+            for (String s : split) {
+                String num = s.substring(0, s.length() - 1);
+
+                long value = Long.parseLong(num);
+                if (s.endsWith("d")) {
+                    total += value * 86400000;
+                } else if (s.endsWith("h")) {
+                    total += value * 3600000;
+                } else if (s.endsWith("m")) {
+                    total += value * 60000;
+                } else if (s.endsWith("s")) {
+                    total += value * 1000;
+                }
+            }
+        } catch (NumberFormatException ignored) {
+        }
+
+        return total;
+    }
+
+    /**
+     * Get an enum from a string value
+     *
+     * @param enumClass The enum class
+     * @param name      The name of the enum
+     * @param <T>       The enum type
+     * @return The enum
+     */
+    public static <T extends Enum<T>> T getEnum(Class<T> enumClass, String name) {
+        if (name == null)
+            return null;
+
+        try {
+            return Enum.valueOf(enumClass, name.toUpperCase());
+        } catch (IllegalArgumentException ignored) {
+        }
+
+        return null;
+    }
+
+    /**
+     * Get an enum from a string value
+     *
+     * @param enumClass The enum class
+     * @param name      The name of the enum
+     * @param <T>       The enum type
+     * @return The enum
+     */
+    public static <T extends Enum<T>> T getEnum(Class<T> enumClass, String name, T def) {
+        if (name == null)
+            return def;
+
+        try {
+            return Enum.valueOf(enumClass, name.toUpperCase());
+        } catch (IllegalArgumentException ignored) {
+        }
+
+        return def;
+    }
+
+
 }

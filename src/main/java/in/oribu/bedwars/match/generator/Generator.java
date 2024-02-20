@@ -1,13 +1,19 @@
 package in.oribu.bedwars.match.generator;
 
 import in.oribu.bedwars.storage.DataKeys;
+import net.kyori.adventure.text.minimessage.MiniMessage;
+import org.bukkit.Color;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
+import org.bukkit.entity.BlockDisplay;
+import org.bukkit.entity.Display;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 
 import java.util.ArrayList;
@@ -27,6 +33,12 @@ public class Generator {
     private int maxAmount; // The maximum amount of items that can be inside a generator
     private int radius; // The radius of the generator (Default: 3x3)
     private boolean shareDrops; // Should the item drops be shared amongst players.
+    private Material hologramMaterial; // The material to use for the hologram
+
+    // Entity Settings
+    private Entity display; // The display entity for the generator
+    private double heightOffset = 1.5; // The height offset for the display entity
+    private double step = 0.0; // The step for the display entity
 
     /**
      * Represents a generator for a resource
@@ -49,9 +61,22 @@ public class Generator {
      * Create all the display functions for the generator (if needed)
      */
     public void create() {
-        // TODO: Create a hologram with timers
-        // TODO: Create spinny cube :)
-        // TODO: Entity creation has to be done synchronously
+        if (!this.hologramMaterial.isBlock()) return;
+
+        Location displayLocation = this.center.clone().add(0, 3, 0);
+        this.display = this.center.getWorld().spawn(displayLocation, BlockDisplay.class, display -> {
+            display.setBlock(this.hologramMaterial.createBlockData());
+            display.setInvulnerable(true);
+            display.setBillboard(Display.Billboard.FIXED);
+
+            PersistentDataContainer container = display.getPersistentDataContainer();
+            container.set(DataKeys.GENERATOR_DISPLAY, PersistentDataType.INTEGER, 1);
+
+            display.setGlowColorOverride(Color.AQUA);
+            display.setGlowing(true);
+            display.setCustomNameVisible(true);
+            display.customName(MiniMessage.miniMessage().deserialize("<gradient:red:blue>Generator</gradient>"));
+        });
     }
 
     /**
@@ -77,6 +102,15 @@ public class Generator {
      * Called when the generator is ticked
      */
     public void tick() {
+        if (this.display != null) {
+            this.step++;
+
+            Location direction = this.display.getLocation().clone();
+            direction.setYaw((float) (this.step * 100));
+            direction.setY(center.getY() - this.heightOffset + Math.sin(step) * 0.2 + this.heightOffset);
+            this.display.teleport(direction);
+        }
+
         // Make sure we're not trying to spawn entities asynchronously
         if (System.currentTimeMillis() - this.lastDrop < this.cooldown)
             return;
