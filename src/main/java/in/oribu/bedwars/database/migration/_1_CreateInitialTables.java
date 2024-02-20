@@ -16,14 +16,9 @@ public class _1_CreateInitialTables extends DataMigration {
     @Override
     public void migrate(DatabaseConnector connector, Connection connection, String tablePrefix) throws SQLException {
         String globalData = "CREATE TABLE IF NOT EXISTS " + tablePrefix + "global (" +
-                            "uuid VARCHAR(36) NOT NULL PRIMARY KEY, " +
+                            "`uuid` VARCHAR(36) NOT NULL PRIMARY KEY, " +
                             "`name` VARCHAR(36) NOT NULL, " +
-                            "kills INT NOT NULL, " +
-                            "deaths INT NOT NULL, " +
-                            "wins INT NOT NULL, " +
-                            "losses INT NOT NULL, " +
-                            "bedsBroken INT NOT NULL, " +
-                            "bedsLost INT NOT NULL" +
+                            "`data` TEXT NOT NULL" +
                             ");";
 
         try (PreparedStatement statement = connection.prepareStatement(globalData)) {

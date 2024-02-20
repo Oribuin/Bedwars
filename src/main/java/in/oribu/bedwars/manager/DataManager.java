@@ -1,5 +1,6 @@
 package in.oribu.bedwars.manager;
 
+import com.google.gson.Gson;
 import dev.rosewood.rosegarden.RosePlugin;
 import dev.rosewood.rosegarden.database.DataMigration;
 import dev.rosewood.rosegarden.manager.AbstractDataManager;
@@ -19,6 +20,7 @@ import java.util.UUID;
 
 public class DataManager extends AbstractDataManager {
 
+    private static final Gson GSON = new Gson();
     private final Map<UUID, Stats> userCache = new HashMap<>();
 
     public DataManager(RosePlugin rosePlugin) {
@@ -37,15 +39,7 @@ public class DataManager extends AbstractDataManager {
 
                 ResultSet result = statement.executeQuery();
                 if (result.next()) {
-                    Stats stats = new Stats();
-                    stats.setKills(result.getInt("kills"));
-                    stats.setDeaths(result.getInt("deaths"));
-                    stats.setWins(result.getInt("wins"));
-                    stats.setLosses(result.getInt("losses"));
-                    stats.setBedsBroken(result.getInt("bedsBroken"));
-                    stats.setBedsLost(result.getInt("bedsLost"));
-
-                    this.userCache.put(player.getUniqueId(), stats);
+                    this.userCache.put(player.getUniqueId(), GSON.fromJson(result.getString("data"), Stats.class));
                 }
             }
         }));
@@ -58,7 +52,7 @@ public class DataManager extends AbstractDataManager {
      */
     public void savePlayers(Match match) {
         this.async(() -> this.databaseConnector.connect(connection -> {
-            String query = "REPLACE INTO " + this.getTablePrefix() + "global (uuid, `name`, kills, deaths, wins, losses, bedsBroken, bedsLost) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+            String query = "REPLACE INTO " + this.getTablePrefix() + "global (uuid, `name`, `data`) VALUES (?, ?, ?)";
 
             try (PreparedStatement statement = connection.prepareStatement(query)) {
 
@@ -73,13 +67,8 @@ public class DataManager extends AbstractDataManager {
 
                     statement.setString(1, player.getUUID().toString());
                     statement.setString(2, player.getName());
-                    statement.setInt(3, stats.getWins());
-                    statement.setInt(4, stats.getDeaths());
-                    statement.setInt(5, stats.getLosses());
-                    statement.setInt(6, stats.getBedsBroken());
-                    statement.setInt(7, stats.getBedsLost());
+                    statement.setString(3, GSON.toJson(stats));
                     statement.addBatch();
-
                     this.userCache.put(player.getUUID(), stats);
                 }
 
