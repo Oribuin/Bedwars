@@ -2,6 +2,7 @@ package in.oribu.bedwars.item.impl;
 
 import in.oribu.bedwars.BedwarsPlugin;
 import in.oribu.bedwars.item.CustomItem;
+import in.oribu.bedwars.item.ItemRegistry;
 import in.oribu.bedwars.storage.DataKeys;
 import in.oribu.bedwars.upgrade.ContextHandler;
 import org.bukkit.Bukkit;
@@ -13,6 +14,7 @@ import org.bukkit.entity.Egg;
 import org.bukkit.event.entity.ProjectileLaunchEvent;
 import org.bukkit.persistence.PersistentDataType;
 
+import java.time.Duration;
 import java.util.List;
 
 /**
@@ -37,12 +39,15 @@ public class BridgeEggItem extends CustomItem {
         }
 
         if (!(event.getEntity() instanceof Egg egg)) return;
+        if (ItemRegistry.isOnCooldown(handler.player().getUniqueId(), this)) return;
 
         egg.getPersistentDataContainer().set(
                 DataKeys.CUSTOM_PROJECTILE,
                 PersistentDataType.STRING,
                 this.getName()
         );
+
+        ItemRegistry.setCooldown(handler.player().getUniqueId(), this);
 
         Bukkit.getScheduler().runTaskTimer(BedwarsPlugin.get(), task -> {
             // Check if the egg is still valid
@@ -61,6 +66,11 @@ public class BridgeEggItem extends CustomItem {
             // Create the bridge
             this.createBridge(egg.getLocation());
         }, 0, 1);
+    }
+
+    @Override
+    public Duration getCooldown() {
+        return Duration.ofSeconds(3);
     }
 
     /**

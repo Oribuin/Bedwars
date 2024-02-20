@@ -14,11 +14,13 @@ import org.bukkit.persistence.PersistentDataType;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
+import java.time.Duration;
 
 public abstract class CustomItem {
 
     private final String name;
     private ItemStack item;
+    private Duration cooldown;
 
     public CustomItem(String name) {
         this.name = name;
@@ -30,6 +32,15 @@ public abstract class CustomItem {
      * @param handler The context handler
      */
     public abstract void event(ContextHandler handler);
+
+    /**
+     * Define the cooldown of the custom item
+     *
+     * @return The cooldown
+     */
+    public Duration getCooldown() {
+        return Duration.ZERO;
+    }
 
     /**
      * Create the custom item from a CommentedConfigurationSection
