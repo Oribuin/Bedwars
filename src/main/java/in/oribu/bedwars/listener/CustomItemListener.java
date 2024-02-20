@@ -54,7 +54,7 @@ public class CustomItemListener implements Listener {
         item.event(new ContextHandler(event, null, player));
     }
 
-    @EventHandler(ignoreCancelled = true, priority = EventPriority.LOW)
+    @EventHandler(priority = EventPriority.LOW)
     public void onHit(ProjectileHitEvent event) {
         Projectile projectile = event.getEntity();
         PersistentDataContainer container = projectile.getPersistentDataContainer();
@@ -62,7 +62,7 @@ public class CustomItemListener implements Listener {
         CustomItem customItem = ItemRegistry.get(projectileType);
         if (customItem == null) return;
 
-        customItem.event(new ContextHandler(event, null, null));
+        customItem.event(new ContextHandler(event, null, projectile.getShooter() instanceof Player player ? player : null));
     }
 
     @EventHandler(ignoreCancelled = true)
@@ -73,7 +73,7 @@ public class CustomItemListener implements Listener {
         }
     }
 
-    @EventHandler(ignoreCancelled = true, priority = EventPriority.LOW)
+    @EventHandler(priority = EventPriority.LOW)
     public void onInteract(PlayerInteractEvent event) {
         ItemStack item = event.getItem();
         if (item == null) return;

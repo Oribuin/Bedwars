@@ -3,6 +3,7 @@ package in.oribu.bedwars.item;
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
 import in.oribu.bedwars.item.impl.BridgeEggItem;
+import in.oribu.bedwars.item.impl.FireballItem;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
@@ -20,6 +21,7 @@ public final class ItemRegistry {
 
     static {
         register(new BridgeEggItem());
+        register(new FireballItem());
     }
 
     /**

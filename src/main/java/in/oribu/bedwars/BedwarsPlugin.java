@@ -3,6 +3,7 @@ package in.oribu.bedwars;
 import dev.rosewood.rosegarden.RosePlugin;
 import dev.rosewood.rosegarden.manager.Manager;
 import in.oribu.bedwars.listener.CustomItemListener;
+import in.oribu.bedwars.listener.MatchListener;
 import in.oribu.bedwars.listener.PlayerListeners;
 import in.oribu.bedwars.manager.CommandManager;
 import in.oribu.bedwars.manager.ConfigurationManager;
@@ -42,7 +43,7 @@ public class BedwarsPlugin extends RosePlugin {
         // Register Listeners
         pluginManager.registerEvents(new CustomItemListener(this), this);
         pluginManager.registerEvents(new PlayerListeners(this), this);
-
+        pluginManager.registerEvents(new MatchListener(this), this);
     }
 
     @Override

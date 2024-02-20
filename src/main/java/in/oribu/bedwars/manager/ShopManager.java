@@ -88,7 +88,6 @@ public class ShopManager extends Manager {
             // Load the itemstack from the shop
             CustomItem item = ItemRegistry.get(itemsSection.getString(key + ".custom-item"));
             ItemStack result;
-            System.out.println("Custom item: " + item);
             if (item != null) {
                 result = item.getItem(itemsSection, key);
             } else {
