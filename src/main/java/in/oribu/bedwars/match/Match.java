@@ -1,6 +1,7 @@
 package in.oribu.bedwars.match;
 
 import in.oribu.bedwars.BedwarsPlugin;
+import in.oribu.bedwars.manager.GameManager;
 import in.oribu.bedwars.match.generator.Generator;
 import in.oribu.bedwars.storage.FinePosition;
 import org.bukkit.Bukkit;
@@ -16,13 +17,13 @@ import java.util.Set;
 
 public class Match {
 
-    private final Level level; // The map of the match
+    private final String level; // The map of the match
     private final Map<String, Team> teams; // The teams in the match
     private final Set<FinePosition> placedBlocks; // The blocks placed in the match
     private MatchStatus status; // The status of the match
     private long startTime; // The time the match started
 
-    public Match(Level level) {
+    public Match(String level) {
         this.level = level;
         this.teams = new HashMap<>();
         this.placedBlocks = new HashSet<>();
@@ -43,7 +44,7 @@ public class Match {
 
         // Get the team with the least players
         Team team = this.teams.values().stream()
-                .filter(t -> t.getPlayers().size() < t.getMaxPlayers())
+                .filter(t -> t.getPlayers().size() < this.getLevel().getPlayersPerTeam())
                 .min(Comparator.comparingInt(t -> t.getPlayers().size()))
                 .orElse(null);
 
@@ -53,7 +54,7 @@ public class Match {
         }
 
         // Add the player to the team
-        team.join(player);
+        team.join(this, player);
     }
 
     /**
@@ -71,7 +72,7 @@ public class Match {
      * Tick the match (called every tick)
      */
     public void tick() {
-        this.level.getGenerators().forEach(Generator::tick);
+        this.getLevel().getGenerators().forEach(Generator::tick);
         this.teams.values().forEach(team -> team.tick(this));
     }
 
@@ -97,8 +98,8 @@ public class Match {
         return this.placedBlocks.stream().noneMatch(pos -> pos.matches(block));
     }
 
-    public Level getMap() {
-        return level;
+    public Level getLevel() {
+        return BedwarsPlugin.get().getManager(GameManager.class).getLevels().get(this.level);
     }
 
     public Map<String, Team> getTeams() {

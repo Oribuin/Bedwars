@@ -20,12 +20,10 @@ public class Team {
     private final @NotNull String name;
     private final @NotNull Location spawn;
     private final @NotNull ChatColor teamColor;
+    private @NotNull Location bed;
     private @NotNull Generator generator;
     private @NotNull Map<UUID, MatchPlayer> players;
     private final @NotNull Map<UpgradeType, Integer> upgrades;
-    private boolean hasBed;
-    private boolean eliminated;
-    private int maxPlayers;
     private @Nullable org.bukkit.scoreboard.Team scoreboardTeam;
 
     /**
@@ -39,13 +37,11 @@ public class Team {
     public Team(@NotNull String name, @NotNull Location spawn, @NotNull Generator generator, @NotNull ChatColor teamColor) {
         this.name = name;
         this.spawn = spawn;
+        this.bed = spawn;
         this.generator = generator;
         this.teamColor = teamColor;
         this.players = new HashMap<>();
         this.upgrades = new HashMap<>();
-        this.hasBed = true;
-        this.eliminated = false;
-        this.maxPlayers = 1;
         this.scoreboardTeam = null;
     }
 
@@ -67,8 +63,8 @@ public class Team {
      *
      * @param player The player to join the team
      */
-    public void join(Player player) {
-        if (this.players.size() >= this.maxPlayers) {
+    public void join(Match match, Player player) {
+        if (this.players.size() >= match.getLevel().getPlayersPerTeam()) {
             Bukkit.getLogger().warning("Player " + player.getName() + " tried to join team " + this.name + " but it was full!");
             return;
         }
@@ -84,6 +80,14 @@ public class Team {
         }
 
         player.sendMessage("You have joined team " + this.name + "!");
+    }
+
+    /**
+     * Reset the team to its default state
+     */
+    public void reset() {
+        this.players.clear();
+        this.upgrades.clear();
     }
 
     /**
@@ -147,6 +151,15 @@ public class Team {
     }
 
     @NotNull
+    public Location getBed() {
+        return bed;
+    }
+
+    public void setBed(@NotNull Location bed) {
+        this.bed = bed;
+    }
+
+    @NotNull
     public Generator getGenerator() {
         return this.generator;
     }
@@ -172,30 +185,6 @@ public class Team {
     @NotNull
     public Map<UpgradeType, Integer> getUpgrades() {
         return this.upgrades;
-    }
-
-    public boolean isHasBed() {
-        return this.hasBed;
-    }
-
-    public void setHasBed(boolean hasBed) {
-        this.hasBed = hasBed;
-    }
-
-    public boolean isEliminated() {
-        return this.eliminated;
-    }
-
-    public void setEliminated(boolean eliminated) {
-        this.eliminated = eliminated;
-    }
-
-    public int getMaxPlayers() {
-        return maxPlayers;
-    }
-
-    public void setMaxPlayers(int maxPlayers) {
-        this.maxPlayers = maxPlayers;
     }
 
     @Nullable

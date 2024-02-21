@@ -32,7 +32,7 @@ public class ItemCommand extends BaseRoseCommand {
         return CommandInfo.builder("item")
                 .descriptionKey("command-item-description")
                 .permission("bedwars.item")
-                .playerOnly(true)
+//                .playerOnly(true)
                 .build();
     }
 

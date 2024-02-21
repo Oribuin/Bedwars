@@ -26,7 +26,7 @@ public class HealUpgrade extends Upgrade {
 
         this.lastUse = System.currentTimeMillis();
 
-        int radius = match.getMap().getIslandRadius();
+        int radius = match.getLevel().getIslandRadius();
 
         Location center = team.getSpawn();
         if (center.getWorld() != null) {

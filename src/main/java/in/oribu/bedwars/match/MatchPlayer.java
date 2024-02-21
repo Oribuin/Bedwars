@@ -79,9 +79,9 @@ public class MatchPlayer {
         player.getInventory().clear();
         player.setInvisible(true);
         if (NMSUtil.isPaper()) {
-            player.teleportAsync(match.getMap().getCenter());
+            player.teleportAsync(match.getLevel().getCenter());
         } else {
-            player.teleport(match.getMap().getCenter());
+            player.teleport(match.getLevel().getCenter());
         }
 
         // Hide the player from all other players

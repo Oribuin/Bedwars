@@ -15,6 +15,7 @@ import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
+import org.bukkit.util.Vector;
 
 import java.time.Duration;
 import java.util.ArrayList;
@@ -46,7 +47,6 @@ public class Generator {
      *
      * @param materials The materials to drop
      * @param center    The location of the generator
-     * @param cooldown  The cooldown between drops (in millis)
      */
     public Generator(Map<Material, Integer> materials, Location center) {
         this.materials = materials;
@@ -90,6 +90,16 @@ public class Generator {
     }
 
     /**
+     * Destroy the generator
+     */
+    public void destroy() {
+        if (this.display != null) {
+            this.display.remove();
+            this.display = null;
+        }
+    }
+
+    /**
      * Drop an item from the generator
      *
      * @param itemStack The item to drop
@@ -99,6 +109,8 @@ public class Generator {
         if (world == null) return;
 
         world.dropItem(this.center.clone(), itemStack.clone(), item -> {
+            item.setVelocity(new Vector());
+            item.setCanMobPickup(false);
             item.setUnlimitedLifetime(true);
             item.getPersistentDataContainer().set(
                     DataKeys.GENERATOR_ITEM,
@@ -116,9 +128,10 @@ public class Generator {
             this.step++;
 
             double theta = this.step * 0.05;
-            Location direction = this.center.toCenterLocation().add(0, 1.5, 0);
+            Location newCenter = this.center.toCenterLocation().add(0, 1.5, 0);
+            Location direction = this.center.toCenterLocation();
             direction.setYaw((float) (theta * 100));
-            direction.setY(center.getY() - this.heightOffset + Math.sin(theta) * 0.2 + this.heightOffset);
+            direction.setY(newCenter.getY() - this.heightOffset + Math.sin(theta) * 0.2 + this.heightOffset);
             this.display.teleport(direction);
         }
 

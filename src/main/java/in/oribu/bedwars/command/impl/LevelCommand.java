@@ -5,6 +5,7 @@ import dev.rosewood.rosegarden.command.framework.ArgumentsDefinition;
 import dev.rosewood.rosegarden.command.framework.BaseRoseCommand;
 import dev.rosewood.rosegarden.command.framework.CommandInfo;
 import in.oribu.bedwars.command.impl.level.CreateCommand;
+import in.oribu.bedwars.command.impl.level.GeneratorCommand;
 
 public class LevelCommand extends BaseRoseCommand {
 
@@ -23,6 +24,6 @@ public class LevelCommand extends BaseRoseCommand {
     @Override
     protected ArgumentsDefinition createArgumentsDefinition() {
         return ArgumentsDefinition.builder()
-                .requiredSub(new CreateCommand(this.rosePlugin));
+                .requiredSub(new CreateCommand(this.rosePlugin), new GeneratorCommand(this.rosePlugin));
     }
 }

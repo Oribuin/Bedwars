@@ -7,9 +7,11 @@ import dev.rosewood.rosegarden.manager.Manager;
 import in.oribu.bedwars.match.Level;
 import in.oribu.bedwars.match.Match;
 import in.oribu.bedwars.match.MatchStatus;
+import in.oribu.bedwars.match.Team;
 import in.oribu.bedwars.match.generator.Generator;
 import in.oribu.bedwars.util.BedwarsUtil;
 import net.kyori.adventure.text.Component;
+import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -25,9 +27,7 @@ import java.util.Map;
 
 public class GameManager extends Manager {
 
-    private Map<String, Level> levels = new HashMap<>(); // The levels that are loaded
-    private File levelFolder; // The folder where the levels are stored
-
+    private final Map<String, Level> levels = new HashMap<>(); // The levels that are loaded
     private @Nullable Match activeMatch;
     private BukkitTask countdownTask; // The task that makes sure theres enough players to start the match
 
@@ -45,7 +45,6 @@ public class GameManager extends Manager {
         if (!folder.exists()) {
             folder.mkdirs();
         }
-
 
         // Create the file
         File[] files = folder.listFiles();
@@ -78,7 +77,7 @@ public class GameManager extends Manager {
         // Wait for the level to load before creating the match and setting it as the active match
         level.load();
 
-        this.activeMatch = new Match(level);
+        this.activeMatch = new Match(level.getName());
         this.activeMatch.setStatus(MatchStatus.WAITING);
 
         // Tell all the players that they can join the match when its ready
@@ -113,6 +112,7 @@ public class GameManager extends Manager {
      * @param file The file
      * @return The loaded level
      */
+    @SuppressWarnings("deprecation")
     public Level loadLevel(File file) {
         CommentedFileConfiguration config = CommentedFileConfiguration.loadConfiguration(file);
 
@@ -181,7 +181,57 @@ public class GameManager extends Manager {
             }
         }
 
+        // Load Level Teams
+        CommentedConfigurationSection teamSettingsSection = config.getConfigurationSection("team-settings");
+        if (teamSettingsSection != null) {
+            level.setMaxTeams(config.getInt("team-settings.max-teams", 8));
+            level.setPlayersPerTeam(teamSettingsSection.getInt("team-settings.players-per-team", 1));
+
+            CommentedConfigurationSection teamsSection = config.getConfigurationSection("team-settings.teams");
+            if (teamsSection != null) {
+                for (String key : teamsSection.getKeys(false)) {
+                    int teamNumber = Integer.parseInt(key);
+                    String teamPath = "team-settings.teams." + teamNumber;
+                    String teamName = teamsSection.getString(teamPath + ".name");
+
+                    if (teamName == null) {
+                        this.rosePlugin.getLogger().warning("Unable to find the name of the team " + teamNumber + " in the level " + file.getName() + ".");
+                        return null;
+                    }
+
+                    // Load the bed positions
+                    int bedX = teamsSection.getInt(teamPath + ".bed.x");
+                    int bedY = teamsSection.getInt(teamPath + ".bed.y");
+                    int bedZ = teamsSection.getInt(teamPath + ".bed.z");
+
+                    // Load the spawn positions
+                    int xSpawn = teamsSection.getInt(teamPath + ".spawn.x");
+                    int ySpawn = teamsSection.getInt(teamPath + ".spawn.y");
+                    int zSpawn = teamsSection.getInt(teamPath + ".spawn.z");
+                    float yawSpawn = (float) teamsSection.getDouble(teamPath + ".spawn.yaw");
+                    float pitchSpawn = (float) teamsSection.getDouble(teamPath + ".spawn.pitch");
+                    Location spawn = new Location(world, xSpawn, ySpawn, zSpawn, yawSpawn, pitchSpawn);
+
+                    // Load Team Color
+                    ChatColor color = ChatColor.valueOf(teamsSection.getString(teamPath + ".color", "WHITE").toUpperCase());
+
+                    // Load the team generator location
+                    Team team = new Team(teamName, spawn, level.getGenerators().get(teamNumber), color);
+                    team.setBed(new Location(world, bedX, bedY, bedZ));
+                    level.getTeams().put(teamName, team);
+                }
+            } else {
+                this.rosePlugin.getLogger().warning("Unable to find the teams of the level " + file.getName() + ".");
+            }
+
+
+        }
 
         return level;
     }
+
+    public Map<String, Level> getLevels() {
+        return this.levels;
+    }
+
 }
