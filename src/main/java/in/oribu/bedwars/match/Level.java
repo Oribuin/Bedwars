@@ -44,7 +44,6 @@ public class Level {
         this.generators.forEach(Generator::create);
 
         // TODO: Place the beds and other items
-
     }
 
     /**

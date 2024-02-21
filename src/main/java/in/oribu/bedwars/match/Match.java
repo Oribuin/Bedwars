@@ -7,8 +7,8 @@ import in.oribu.bedwars.storage.FinePosition;
 import org.bukkit.Bukkit;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
+import org.bukkit.scheduler.BukkitTask;
 
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -22,6 +22,7 @@ public class Match {
     private final Set<FinePosition> placedBlocks; // The blocks placed in the match
     private MatchStatus status; // The status of the match
     private long startTime; // The time the match started
+    private BukkitTask tickTask; // The task that ticks the match
 
     public Match(String level) {
         this.level = level;
@@ -42,10 +43,11 @@ public class Match {
             return;
         }
 
+        // TODO: fix????????
         // Get the team with the least players
-        Team team = this.teams.values().stream()
-                .filter(t -> t.getPlayers().size() < this.getLevel().getPlayersPerTeam())
-                .min(Comparator.comparingInt(t -> t.getPlayers().size()))
+        Team team = this.teams.values().stream().findFirst()
+//                .filter(t -> t.getPlayers().size() < this.getLevel().getPlayersPerTeam())
+//                .min(Comparator.comparingInt(t -> t.getPlayers().size()))
                 .orElse(null);
 
         if (team == null) {
@@ -64,9 +66,19 @@ public class Match {
         // Set the start time
         this.startTime = System.currentTimeMillis();
         this.status = MatchStatus.RUNNING;
-
-        Bukkit.getScheduler().runTaskTimer(BedwarsPlugin.get(), this::tick, 0, 1);
+        this.tickTask = Bukkit.getScheduler().runTaskTimer(BedwarsPlugin.get(), this::tick, 0, 1);
     }
+
+    /**
+     * End the match (called when the match ends)
+     */
+    public void end() {
+        this.status = MatchStatus.ENDING;
+        this.tickTask.cancel();
+        this.getPlayers().forEach(player -> player.getPlayer().sendMessage("The match has ended!"));
+        this.getLevel().getGenerators().forEach(Generator::destroy);
+    }
+
 
     /**
      * Tick the match (called every tick)

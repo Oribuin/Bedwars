@@ -68,10 +68,10 @@ public class GameManager extends Manager {
      *
      * @param level The level to create the match from
      */
-    public void createNewMatch(Level level) {
+    public Match createNewMatch(Level level) {
         if (this.activeMatch != null) {
             Bukkit.getLogger().severe("Tried to create a new match while another match is active!");
-            return;
+            return null;
         }
 
         // Wait for the level to load before creating the match and setting it as the active match
@@ -82,6 +82,7 @@ public class GameManager extends Manager {
 
         // Tell all the players that they can join the match when its ready
         Bukkit.getOnlinePlayers().forEach(player -> player.sendMessage(Component.text("A new match has been created! Type /bw join to join the match!")));
+        return this.activeMatch;
     }
 
     @Override

@@ -6,6 +6,7 @@ import dev.rosewood.rosegarden.command.framework.BaseRoseCommand;
 import dev.rosewood.rosegarden.command.framework.CommandInfo;
 import in.oribu.bedwars.command.impl.ItemCommand;
 import in.oribu.bedwars.command.impl.LevelCommand;
+import in.oribu.bedwars.command.impl.MatchCommand;
 import in.oribu.bedwars.command.impl.ShopCommand;
 
 public class BaseCommand extends BaseRoseCommand {
@@ -29,6 +30,7 @@ public class BaseCommand extends BaseRoseCommand {
                 .requiredSub(
                         new ItemCommand(this.rosePlugin),
                         new LevelCommand(this.rosePlugin),
+                        new MatchCommand(this.rosePlugin),
                         new ShopCommand(this.rosePlugin)
                 );
     }
