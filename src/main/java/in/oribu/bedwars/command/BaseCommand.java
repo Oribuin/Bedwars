@@ -21,11 +21,12 @@ public class BaseCommand extends BaseRoseCommand {
                 .descriptionKey("command-base-description")
                 .aliases("bw")
                 .permission("bedwars.use")
+                .arguments(this.createArgumentsDefinition())
                 .build();
     }
 
-    @Override
-    protected ArgumentsDefinition createArgumentsDefinition() {
+
+    public ArgumentsDefinition createArgumentsDefinition() {
         return ArgumentsDefinition.builder()
                 .requiredSub(
                         new ItemCommand(this.rosePlugin),

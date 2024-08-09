@@ -28,11 +28,12 @@ public class CreateCommand extends BaseRoseCommand {
     protected CommandInfo createCommandInfo() {
         return CommandInfo.builder("create")
                 .permission("bedwars.start")
+                .arguments(this.createArgumentsDefinition())
                 .build();
     }
 
-    @Override
-    protected ArgumentsDefinition createArgumentsDefinition() {
+
+    public ArgumentsDefinition createArgumentsDefinition() {
         return ArgumentsDefinition.builder()
                 .required("level", new LevelArgumentHandler())
                 .build();

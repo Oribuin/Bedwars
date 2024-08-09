@@ -10,6 +10,7 @@ import in.oribu.bedwars.match.MatchPlayer;
 import in.oribu.bedwars.storage.Stats;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -17,6 +18,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.function.Supplier;
 
 public class DataManager extends AbstractDataManager {
 
@@ -86,10 +88,9 @@ public class DataManager extends AbstractDataManager {
         Bukkit.getScheduler().runTaskAsynchronously(this.rosePlugin, runnable);
     }
 
-
     @Override
-    public List<Class<? extends DataMigration>> getDataMigrations() {
-        return List.of(_1_CreateInitialTables.class);
+    public @NotNull List<Supplier<? extends DataMigration>> getDataMigrations() {
+        return List.of(_1_CreateInitialTables::new);
     }
 
 }

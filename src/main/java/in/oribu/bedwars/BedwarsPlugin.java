@@ -6,7 +6,6 @@ import in.oribu.bedwars.listener.CustomItemListener;
 import in.oribu.bedwars.listener.MatchListener;
 import in.oribu.bedwars.listener.PlayerListeners;
 import in.oribu.bedwars.manager.CommandManager;
-import in.oribu.bedwars.manager.ConfigurationManager;
 import in.oribu.bedwars.manager.DataManager;
 import in.oribu.bedwars.manager.GameManager;
 import in.oribu.bedwars.manager.LocaleManager;
@@ -24,7 +23,6 @@ public class BedwarsPlugin extends RosePlugin {
     public BedwarsPlugin() {
         super(
                 -1, -1,
-                ConfigurationManager.class,
                 DataManager.class,
                 LocaleManager.class,
                 CommandManager.class

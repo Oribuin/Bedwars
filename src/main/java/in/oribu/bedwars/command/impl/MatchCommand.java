@@ -20,11 +20,12 @@ public class MatchCommand extends BaseRoseCommand {
         return CommandInfo.builder("match")
                 .descriptionKey("command-match-description")
                 .permission("bedwars.match")
+                .arguments(this.createArgumentsDefinition())
                 .build();
     }
 
-    @Override
-    protected ArgumentsDefinition createArgumentsDefinition() {
+
+    public ArgumentsDefinition createArgumentsDefinition() {
         return ArgumentsDefinition.builder()
                 .requiredSub(
                         new CreateCommand(this.rosePlugin),

@@ -32,13 +32,13 @@ public class ItemCommand extends BaseRoseCommand {
         return CommandInfo.builder("item")
                 .descriptionKey("command-item-description")
                 .permission("bedwars.item")
-//                .playerOnly(true)
+                .playerOnly(true)
+                .arguments(this.createArgumentsDefinition())
                 .build();
     }
 
 
-    @Override
-    protected ArgumentsDefinition createArgumentsDefinition() {
+    public ArgumentsDefinition createArgumentsDefinition() {
         return ArgumentsDefinition.builder()
                 .required("item", new CustomItemArgumentHandler())
                 .build();

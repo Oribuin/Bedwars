@@ -54,12 +54,12 @@ public class GeneratorCommand extends BaseRoseCommand {
     protected CommandInfo createCommandInfo() {
         return CommandInfo.builder("generator")
                 .permission("bedwars.level.generator")
-//                .playerOnly(true)
+                .playerOnly(true)
+                .arguments(this.createArgumentsDefinition())
                 .build();
     }
 
-    @Override
-    protected ArgumentsDefinition createArgumentsDefinition() {
+    private ArgumentsDefinition createArgumentsDefinition() {
         return ArgumentsDefinition.builder()
                 .required("level", new LevelArgumentHandler())
                 .required("delay", ArgumentHandlers.INTEGER)

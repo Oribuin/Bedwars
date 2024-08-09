@@ -18,11 +18,12 @@ public class LevelCommand extends BaseRoseCommand {
         return CommandInfo.builder("level")
                 .descriptionKey("command-level-description")
                 .permission("bedwars.level")
+                .arguments(this.createArgumentsDefinition())
                 .build();
     }
 
-    @Override
-    protected ArgumentsDefinition createArgumentsDefinition() {
+
+    public ArgumentsDefinition createArgumentsDefinition() {
         return ArgumentsDefinition.builder()
                 .requiredSub(new CreateCommand(this.rosePlugin), new GeneratorCommand(this.rosePlugin));
     }

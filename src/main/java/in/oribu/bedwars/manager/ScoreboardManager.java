@@ -4,8 +4,6 @@ import dev.rosewood.rosegarden.RosePlugin;
 import dev.rosewood.rosegarden.hook.PlaceholderAPIHook;
 import dev.rosewood.rosegarden.manager.Manager;
 import dev.rosewood.rosegarden.utils.HexUtils;
-import in.oribu.bedwars.manager.ConfigurationManager.Setting;
-import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.event.Listener;
@@ -37,13 +35,13 @@ public class ScoreboardManager extends Manager implements Listener {
     public void reload() {
         this.scoreboard.getTeams().forEach(org.bukkit.scoreboard.Team::unregister);
         AtomicInteger slot = new AtomicInteger(-1);
-        Setting.SCOREBOARD_LINES.getStringList().forEach((line) -> {
-            org.bukkit.scoreboard.Team team = this.scoreboard.registerNewTeam("bedwars-" + slot.incrementAndGet());
-            String entry = ChatColor.values()[slot.get()].toString() + ChatColor.RESET;
-
-            team.addEntry(entry);
-            this.objective.getScore(entry).setScore(15 - slot.get());
-        });
+//        Setting.SCOREBOARD_LINES.getStringList().forEach((line) -> {
+//            org.bukkit.scoreboard.Team team = this.scoreboard.registerNewTeam("bedwars-" + slot.incrementAndGet());
+//            String entry = ChatColor.values()[slot.get()].toString() + ChatColor.RESET;
+//
+//            team.addEntry(entry);
+//            this.objective.getScore(entry).setScore(15 - slot.get());
+//        });
 
         this.updateTask = Bukkit.getScheduler().runTaskTimerAsynchronously(this.rosePlugin, this::update, 0L, 2);
     }
@@ -56,16 +54,16 @@ public class ScoreboardManager extends Manager implements Listener {
         if (this.objective == null) return;
         if (Bukkit.getOnlinePlayers().isEmpty()) return;
 
-        String title = HexUtils.colorify(PlaceholderAPIHook.applyPlaceholders(null, Setting.SCOREBOARD_TITLE.getString()));
-        this.objective.setDisplayName(title.substring(0, Math.min(title.length(), 128)));
-
-        AtomicInteger slot = new AtomicInteger(-1);
-        Setting.SCOREBOARD_LINES.getStringList().forEach((line) -> {
-            org.bukkit.scoreboard.Team team = this.scoreboard.getTeam("bedwars-" + slot.incrementAndGet());
-            if (team == null) return;
-
-            team.setSuffix(HexUtils.colorify(PlaceholderAPIHook.applyPlaceholders(null, line)));
-        });
+//        String title = HexUtils.colorify(PlaceholderAPIHook.applyPlaceholders(null, Setting.SCOREBOARD_TITLE.getString()));
+//        this.objective.setDisplayName(title.substring(0, Math.min(title.length(), 128)));
+//
+//        AtomicInteger slot = new AtomicInteger(-1);
+//        Setting.SCOREBOARD_LINES.getStringList().forEach((line) -> {
+//            org.bukkit.scoreboard.Team team = this.scoreboard.getTeam("bedwars-" + slot.incrementAndGet());
+//            if (team == null) return;
+//
+//            team.setSuffix(HexUtils.colorify(PlaceholderAPIHook.applyPlaceholders(null, line)));
+//        });
     }
 
     @Override

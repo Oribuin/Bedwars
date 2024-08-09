@@ -9,13 +9,16 @@ import in.oribu.bedwars.match.Match;
 import in.oribu.bedwars.match.MatchStatus;
 import in.oribu.bedwars.match.Team;
 import in.oribu.bedwars.match.generator.Generator;
+import in.oribu.bedwars.storage.DataKeys;
 import in.oribu.bedwars.util.BedwarsUtil;
 import net.kyori.adventure.text.Component;
 import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
 import org.bukkit.World;
+import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.scheduler.BukkitTask;
 import org.jetbrains.annotations.Nullable;
 
@@ -23,7 +26,9 @@ import java.io.File;
 import java.time.Duration;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 public class GameManager extends Manager {
 
@@ -61,6 +66,9 @@ public class GameManager extends Manager {
                         this.levels.put(level.getName(), level);
                     }
                 });
+
+        // Check and remove any entities that are not supposed to be in the world
+        this.checkForEntities();
     }
 
     /**
@@ -99,6 +107,15 @@ public class GameManager extends Manager {
     }
 
     /**
+     * Cancel the active match and set it to null
+     */
+    public void remove() {
+        if (this.activeMatch == null) return;
+
+        this.activeMatch = null;
+    }
+
+    /**
      * Cache a level into the manager
      *
      * @param level The level to cache
@@ -111,6 +128,7 @@ public class GameManager extends Manager {
      * Load the level from a file in the /Bedwars/levels folder
      *
      * @param file The file
+     *
      * @return The loaded level
      */
     @SuppressWarnings("deprecation")
@@ -229,6 +247,37 @@ public class GameManager extends Manager {
         }
 
         return level;
+    }
+
+    /**
+     * Check the world for any entities that are not supposed to be there
+     */
+    public void checkForEntities() {
+        List<World> worlds = this.levels.values().stream()
+                .map(level -> level.getCenter().getWorld())
+                .filter(Objects::nonNull)
+                .distinct()
+                .toList();
+
+        // performance :-)
+        worlds.forEach(world -> world.getEntities().forEach(entity -> {
+            PersistentDataContainer container = entity.getPersistentDataContainer();
+            if (this.hasAny(container, DataKeys.CUSTOM_ENTITY, DataKeys.CUSTOM_PROJECTILE, DataKeys.CUSTOM_PROJECTILE)) {
+                entity.remove();
+            }
+        }));
+    }
+
+    /**
+     * Check if a PersistentDataContainer has any of the following keys in it
+     *
+     * @param container The container to check
+     * @param keys      The keys to check for
+     *
+     * @return True if the container has any of the keys
+     */
+    private boolean hasAny(PersistentDataContainer container, NamespacedKey... keys) {
+        return Arrays.stream(keys).anyMatch(container::has);
     }
 
     public Map<String, Level> getLevels() {

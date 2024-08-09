@@ -32,7 +32,7 @@ repositories {
 }
 
 dependencies {
-    api("dev.rosewood:rosegarden:1.3.0.22-DEV-SNAPSHOT")
+    api("dev.rosewood:rosegarden:1.4.0")
     api("dev.triumphteam:triumph-gui:3.1.7") {
         exclude(group = "com.google.code.gson", module = "gson")
         exclude(group = "net.kyori", module = "*")

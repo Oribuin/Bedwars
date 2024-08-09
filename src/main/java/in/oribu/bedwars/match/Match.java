@@ -46,8 +46,8 @@ public class Match {
         // TODO: fix????????
         // Get the team with the least players
         Team team = this.teams.values().stream().findFirst()
-//                .filter(t -> t.getPlayers().size() < this.getLevel().getPlayersPerTeam())
-//                .min(Comparator.comparingInt(t -> t.getPlayers().size()))
+                //                .filter(t -> t.getPlayers().size() < this.getLevel().getPlayersPerTeam())
+                //                .min(Comparator.comparingInt(t -> t.getPlayers().size()))
                 .orElse(null);
 
         if (team == null) {
@@ -74,9 +74,15 @@ public class Match {
      */
     public void end() {
         this.status = MatchStatus.ENDING;
-        this.tickTask.cancel();
         this.getPlayers().forEach(player -> player.getPlayer().sendMessage("The match has ended!"));
         this.getLevel().getGenerators().forEach(Generator::destroy);
+
+        if (this.tickTask != null) {
+            this.tickTask.cancel();
+        }
+
+        // Un-cache the match
+        BedwarsPlugin.get().getManager(GameManager.class).remove();
     }
 
 
@@ -104,6 +110,7 @@ public class Match {
      * Check if a block has been placed by a player already, If not, the block cannot be broken
      *
      * @param block The block
+     *
      * @return True if the block can be broken
      */
     public boolean canBeBroken(Block block) {

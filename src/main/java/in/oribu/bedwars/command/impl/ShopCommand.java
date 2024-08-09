@@ -58,12 +58,13 @@ public class ShopCommand extends BaseRoseCommand {
         return CommandInfo.builder("shop")
                 .descriptionKey("command-shop-description")
                 .permission("bedwars.shop")
-//                .playerOnly(true)
+                .playerOnly(true)
+                .arguments(this.createArgumentsDefinition())
                 .build();
     }
 
-    @Override
-    protected ArgumentsDefinition createArgumentsDefinition() {
+
+    public ArgumentsDefinition createArgumentsDefinition() {
         return ArgumentsDefinition.builder()
                 .required("shop", new ShopArgumentHandler())
                 .build();
